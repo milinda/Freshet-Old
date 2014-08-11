@@ -1,0 +1,37 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'thrift'
+
+group = 'org.pathirage.cloudbi'
+
+dependencies {
+    //
+    // adjust for your Thrift version ...
+    //
+    compile 'org.apache.thrift:libthrift:0.8.0'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'co.tomlee.gradle.plugins:gradle-thrift-plugin:0.0.3'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+compileThrift {
+    inputs.file file("src/main/thrift/event.thrift")
+
+    generators {
+        java {
+            option 'hashcode'
+            option 'beans'
+        }
+    }
+}
