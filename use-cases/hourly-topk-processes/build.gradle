@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    compile 'ca:ca-thrift:0.1-SNAPSHOT'
+    compile 'org.pathirage.cloudbi:thrift-lib:1.0'
     compile('org.apache.kafka:kafka_2.10:0.8.1.1') {
         exclude group: 'javax.jms', module: 'jms'
         exclude group: 'com.sun.jdmk', module: 'jmxtools'

@@ -5,6 +5,6 @@ struct Event {
   2: string eventType;
   3: string id;
   4: string data;
-  5: long timestamp;
+  5: i64 timestamp;
   6: string version;
 }
