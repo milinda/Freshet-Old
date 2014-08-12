@@ -18,6 +18,7 @@ public class HourlyTopKBackingMap implements IBackingMap<OpaqueValue> {
     private Jedis redisClient;
 
     public HourlyTopKBackingMap(Map conf){
+        redisClient = new Jedis("localhost");
     }
 
     public static StateFactory FACTORY = new StateFactory() {

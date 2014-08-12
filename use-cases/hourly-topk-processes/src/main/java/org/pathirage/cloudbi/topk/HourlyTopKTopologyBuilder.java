@@ -25,7 +25,8 @@ public class HourlyTopKTopologyBuilder {
                 .each(new Fields("stream", "type", "event", "id"), new HourAssignmentFunction(), new Fields("hourSinceEpoch"))
                 .each(new Fields("stream", "type", "event", "id", "hourSinceEpoch"), new InstanceCreatedEventFilter())
                 .project(new Fields("hourSinceEpoch", "process", "instance"))
-                .groupBy(new Fields("hourSinceEpoch"));
+                .groupBy(new Fields("hourSinceEpoch"))
+                .persistentAggregate(HourlyTopKBackingMap.FACTORY, new Fields("hourSinceEpoch", "process", "instance"), new HourlyTopKUpdater(), new Fields("hourlyTopK"));
 
         return indexerTopology.build();
     }
