@@ -5,6 +5,7 @@ group = 'org.pathirage.cloudbi'
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
@@ -29,4 +30,5 @@ dependencies {
     }
     compile('org.slf4j:slf4j-api:1.7.7')
     compile('com.clearspring.analytics:stream:2.7.0')
+    compile('com.fasterxml.jackson.core:jackson-databind:2.3.3')
 }
