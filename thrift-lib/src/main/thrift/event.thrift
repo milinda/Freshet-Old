@@ -1,4 +1,4 @@
-namespace java ca.thrift
+namespace java org.pathirage.cloudbi.thrift
 
 struct Event {
   1: string stream;
