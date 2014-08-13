@@ -1,4 +1,4 @@
-cloud-bi
-========
+Freshet - Cloud Scale Multi-tenant Hybrid Analytics Framework
+=============================================================
 
-Multi-Tenant Real-Time Business Intelligence Tool
+Hybrid (Streaming + Batch) analytics framework based on [Apache Storm](https://storm.incubator.apache.org) for real-time business intelligence.
