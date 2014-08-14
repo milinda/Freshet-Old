@@ -1,14 +1,8 @@
-# benchmark-utils
+# Freshet Benchmark Utilities
 
-A Clojure library designed to ... well, that part is up to you.
+Various utilities needed for benchmarking Freshet performance and scalability.
 
-## Usage
 
-FIXME
+Copyright © 2014 Milinda Pathirage
 
-## License
-
-Copyright © 2014 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the Apache License Version 2.0.
