@@ -32,16 +32,14 @@
 (defn generate-workflow-instance
   [num-activities num-svc-invokes]
   (let [instance-id (UUID/randomUUID)
-        workflow-name (rand-nth workflow)
+        workflow-name (rand-nth workflow-names)
         activities (atom [])
         prev-is-script (atom false)
         receive-activity (rand-nth at-receive)
-        num-invoke-activities (atom 0)
         num-actual-invokes (atom 0)
         entry-point (rand-nth workflow-entry-points)]
-    (for [i 0]
-      (if (< i num-activities)
-        (do
+    (loop [i 0]
+      (when (< i num-activities)
           (cond
             (= i 0) (swap!
                       activities
@@ -59,7 +57,7 @@
                                                      (get at-reply receive-activity)
                                                      entry-point
                                                      nil))))
-            (or (not @prev-is-script)  (= @num-invoke-activities num-svc-invokes)) (do
+            (or (not @prev-is-script)  (= @num-actual-invokes num-svc-invokes)) (do
                                                                               (swap!
                                                                                 activities
                                                                                 (fn [a]
@@ -78,5 +76,5 @@
                                                   (rand-nth service-endpoints)))))
                     (swap! prev-is-script (fn [_] false))
                     (swap! num-actual-invokes addone)))
-          (recur (+ i 1)))))
-    (WorkflowInstance. instance-id workflow-name activities num-invoke-activities)))
+          (recur (+ i 1))))
+    (WorkflowInstance. instance-id workflow-name @activities @num-actual-invokes)))
