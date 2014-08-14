@@ -7,6 +7,11 @@ Freshet benchmark measure various aspects of Freshet hybrid monitoring platform 
 * Reliability and Behavior under failures
 * Usability of programming model
 
+## Interesting Problems
+
+* Multiple Storm clusters vs multiple topologies in same Storm clusters for handling multi-tenancy
+* When using single Storm cluster, how to ensure fair scheduling between various topologies from different tenants
+
 
 ## Performance and scalability benchmark design
 
