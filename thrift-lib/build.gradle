@@ -4,7 +4,7 @@ apply plugin: 'thrift'
 apply plugin: 'maven'
 
 
-group = 'org.pathirage.cloudbi'
+group = 'org.pathirage.freshet'
 
 dependencies {
     compile 'org.apache.thrift:libthrift:0.9.1'

@@ -1,4 +1,6 @@
-# Freshet Benchmark Application - Hourly Top-K Processes
+# Freshet Benchmark Data Generator
+
+Generate test data for Freshet benchmark.
 
 Copyright © 2014 Milinda Pathirage
 
