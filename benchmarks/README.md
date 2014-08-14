@@ -11,7 +11,16 @@ Freshet benchmark measure various aspects of Freshet hybrid monitoring platform 
 ## Performance and scalability benchmark design
 
 ```
-+------------------------------+     +---------------+
-| Multi-tenant Event Generator | --> | Kafka Cluster |
-+------------------------------+     +---------------+
+                     Multiple tenants are simulated
+                     using multiple topics
+                     ==============================
+                                  |
++------------------------------+  |  +---------------+     +-------------------------+
+| Multi-tenant Event Generator | --> | Kafka Cluster | --> | Apache Storm Topologies |
++------------------------------+     +---------------+     +-------------------------+
+                                                                  |
+                                                                  |
+                                                     ======================================
+                                                     Multiple topologies per tenant running
+                                                     different analytics tasks
 ```
