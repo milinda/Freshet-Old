@@ -23,9 +23,11 @@
 
 (def at-invoke ["get" "put" "post" "delete"])
 
-(def at-reply {"receiveget" "replyget", "receivepost" "replypost"})
+(def at-reply {"receiveget" "replyget" "receivepost" "replypost"})
 
 (def at-script "script")
+
+(def version "1.0")
 
 (defn addone [n] (+ n 1))
 
@@ -78,3 +80,34 @@
                     (swap! num-actual-invokes addone)))
           (recur (+ i 1))))
     (WorkflowInstance. instance-id workflow-name @activities @num-actual-invokes)))
+
+(defn create-workflow-activity
+  ([timestamp version workflow instance-id event-type event-source-type]
+   {:timestamp timestamp :version version :workflow workflow :instance-id instance-id :event-type event-type :event-source-type event-source-type})
+  ([timestamp version workflow instance-id event-type event-source-type activity-type activity-name]
+   {:timestamp timestamp :version version :workflow workflow :instance-id instance-id :event-type event-type :event-source-type event-source-type :activity-type activity-type :activity-name activity-name})
+  ([timestamp version workflow instance-id event-type event-source-type source-activity target-activity is-data-link]
+   {:timestamp timestamp :version version :workflow workflow :instance-id instance-id :event-type event-type :event-source-type event-source-type :source-activity source-activity :target-activity target-activity :data-link is-data-link :error-link (not is-data-link)}))
+
+(defn generate-receive-activity-events [instance-id workflow-name activity time]
+  [(create-workflow-activity time version workflow-name instance-id "MESSAGE_RECEIVED" "MESSAGE")
+   (create-workflow-activity time version workflow-name instance-id "INSTANCE_CREATED" "INSTANCE")
+   (create-workflow-activity time version workflow-name instance-id "ACTIVITY_ACTIVATED" "ACTIVITY" (:type activity) (:name activity))
+   (create-workflow-activity (+ (rand-int 2) time) version workflow-name instance-id "ACTIVITY_RECEIVED_MESSAGE" "ACTIVITY" (:type activity) (:name activity))
+   (create-workflow-activity (+ (rand-int 2) time) version workflow-name instance-id "ACTIVITY_COMPLETED" "ACTIVITY" (:type activity) (:name activity))])
+
+(defn generate-link-events [source-activity target-activity instance-id workflow-name time]
+  [(create-workflow-activity time version workflow-name instance-id "LINK_EVALUATED" "LINK" (:name source-activity) (:name target-activity) false)])
+
+(defn generate-script-activity-events [activity instance-id workflow-name time]
+  [])
+
+(defn generate-reply-activity-events [activity instance-id workflow-name time]
+  [])
+
+(defn generate-svc-invoke-activity-events [activity instance-id workflow-name time]
+  [])
+
+(defn generate-workflow-activity-events-for-process-instance [process-instance]
+  (let [current-time (System/currentTimeMillis)]
+    []))
