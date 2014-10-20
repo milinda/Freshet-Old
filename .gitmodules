@@ -1,4 +1,0 @@
-[submodule "incubator-storm"]
-	path = incubator-storm
-	url = https://github.com/apache/incubator-storm.git
-	branch = security
