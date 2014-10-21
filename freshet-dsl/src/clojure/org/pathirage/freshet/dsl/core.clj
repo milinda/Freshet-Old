@@ -27,12 +27,6 @@
   :fields []
   :ts :timestamp})
 
-;*****************************************************
-;; collection-utils
-;;*****************************************************
-(defn vconcat [v1 v2]
-  (vec (concat v1 v2)))
-
 (defn fields
   "Fields in a stream. These will get retrieved by default in select query if there aren't any projections."
   [stream fields]
