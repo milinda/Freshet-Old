@@ -58,7 +58,7 @@
     {:type      :select
      :fields    (or field-names [::*])
      :from      [(:stream stream-name)]
-     :window #{}
+     :window    #{}
      :where     []
      :aliases   #{}
      :group     []
@@ -81,27 +81,36 @@
   (let [aliases (set (map second (filter vector? fields)))]
     (-> query
         (update-in [:aliases] clojure.set/union aliases)
-        (update-fields query fields))))
+        (update-fields fields))))
 
 ;; TODO: use named parameters for configuring sliding windows.
-(defn range
-  [seconds]
-  {:range seconds})
+(defn wrange
+  [window seconds]
+  (let [window (assoc window :window-type :range)]
+    (assoc window :range seconds)))
 
-(defn window
+(defn wrows
+  [window count]
+  (let [window (assoc window :window-type :rows)]
+    (assoc window :rows count)))
+
+(defn window*
+  []
+  {:type :window})
+
+;; TODO: How to handle multiple stream situation. We need to change how from clause is specified in DSL.
+(defmacro window
   "Set windowing method for stream-to-relational mapping.
-  ex: (window (range 30)"
-  [query wm])
+  ex: (window (range 30))"
+  [query & wm]
+  `(let [window# (-> (window*) ~@wm)]
+     (update-in ~query [:window] clojure.set/union window#)))
 
 (defn execute-query
   "Execute a continuous query. Query will first get converted to extension of relation algebra, then
   to physical query plan before getting deployed in to the stream processing engine."
-  [query])
-
-(comment
-  (define "Representation for queries")
-  (define "Empty query from stream")
-  (define "How to apply modifications"))
+  [query]
+  (prn query))
 
 (defmacro select
   "Build a select query, apply any modifiers specified in the body and then generate and submit DAG of Samza jobs
@@ -112,7 +121,7 @@
         (fields :symbol :bid :ask)
         (where {:symbol 'APPL'}))"
   [stream & body]
-  `(let [query# (-> (select* ~(name stream)) ~@body)]))
-
+  `(let [query# (-> (select* ~(name stream)) ~@body)]
+     (execute-query query#)))
 
 
