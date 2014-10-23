@@ -1,17 +1,29 @@
-(ns org.pathirage.freshet.dsl.core)
+(ns org.pathirage.freshet.dsl.core
+  (:refer-clojure :exclude [range]))
 
 (comment
   "Defining streams"
   (defstream stream
-             (stream-fields [:name :string :address :string :age :integer :timestamp :long])
-             (pk :id)
-             (ts :timestamp))
+             (stream-fields [:symbol :string
+                             :bid :float
+                             :ask :float
+                             :bid-size :float
+                             :ask-size :float
+                             :quote-time :time
+                             :trade-time :time
+                             :exchange :string
+                             :volume :float])
+             (ts (now)))
 
   "Querying"
   (select stream
-          (fields [:name :firstname] :address :age)
-          (window (range 30))
-          (where {:age (less-than 34)}))
+          (fields :symbol :bid :bid-size)
+          (where {:age (less-than 34)})
+
+  "Sliding Windows"
+  (select stream
+          (fields :symbol :bid :ask :exchange)
+          (window )))
 
   "Relation Algebric Expression"
   (def query {:stream stock-ticks :project [name, xx] :select condition})
@@ -58,6 +70,7 @@
     {:type      :select
      :fields    (or field-names [::*])
      :from      [(:stream stream-name)]
+     :modifiers []
      :window    #{}
      :where     []
      :aliases   #{}
@@ -84,15 +97,23 @@
         (update-fields fields))))
 
 ;; TODO: use named parameters for configuring sliding windows.
-(defn wrange
+(defn range
   [window seconds]
   (let [window (assoc window :window-type :range)]
     (assoc window :range seconds)))
 
-(defn wrows
+(defn rows
   [window count]
   (let [window (assoc window :window-type :rows)]
     (assoc window :rows count)))
+
+(defn now
+  [window]
+  (assoc window :window-type :now))
+
+(defn unbounded
+  [window]
+  (assoc window :window-type :unbounded))
 
 (defn window*
   []
@@ -105,6 +126,15 @@
   [query & wm]
   `(let [window# (-> (window*) ~@wm)]
      (update-in ~query [:window] clojure.set/union window#)))
+
+(defn modifiers
+  "Set modifier to the select query to filter which results are returned.
+
+  ex: (select wikipedia-stream
+        (modifier :distinct)
+        (window (range 60)))"
+  [query & m]
+  (update-in query [:modifiers] conj m))
 
 (defn execute-query
   "Execute a continuous query. Query will first get converted to extension of relation algebra, then
