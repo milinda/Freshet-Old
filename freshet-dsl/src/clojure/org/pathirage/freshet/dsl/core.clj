@@ -1,5 +1,6 @@
 (ns org.pathirage.freshet.dsl.core
-  (:refer-clojure :exclude [range]))
+  (:refer-clojure :exclude [range])
+  (:require [clojure.walk :as walk]))
 
 (comment
   "Defining streams"
@@ -15,15 +16,30 @@
                              :volume :float])
              (ts (now)))
 
+  {:having [],
+   :where {:pred :and,
+           :args [{:pred :and,
+                   :args [{:pred :=, :args [:symbol "APPL"]} {:pred :>, :args [:volume 2000]}]}]},
+   :group [],
+   :fields [:*],
+   :joins [],
+   :type :select,
+   :window #{},
+   :modifiers [],
+   :from [nil],
+   :aliases #{},
+   :aggregate []}
+
+
   "Querying"
   (select stream
           (fields :symbol :bid :bid-size)
           (where {:age (less-than 34)})
 
-  "Sliding Windows"
-  (select stream
-          (fields :symbol :bid :ask :exchange)
-          (window )))
+          "Sliding Windows"
+          (select stream
+                  (fields :symbol :bid :ask :exchange)
+                  (window)))
 
   "Relation Algebric Expression"
   (def query {:stream stock-ticks :project [name, xx] :select condition})
@@ -70,11 +86,12 @@
         fields-with-types (:fields stream)
         field-names (not-empty (keys fields-with-types))]
     {:type      :select
-     :fields    (or field-names [::*])
+     :fields    (or field-names [:*])
      :from      [(:stream stream-name)]
      :modifiers []
      :window    #{}
      :where     []
+     :having    []
      :aliases   #{}
      :group     []
      :aggregate []
@@ -83,7 +100,7 @@
 (defn- update-fields
   [query fields]
   (let [[first-in-current] (:fields query)]
-    (if (= first-in-current ::*)
+    (if (= first-in-current :*)
       (assoc query :fields fields)
       (update-in query [:fields] (fn [v1 v2] (vec (concat v1 v2))) fields))))
 
@@ -143,10 +160,105 @@
 
   (or (> :delta 100) (= :newPage "True"))
 
-  {::pred or ::args [{::pred > ::args [:delta 100]} {::pred = ::args [:newPage "True"]}]})
+  {::pred or ::args [{::pred > ::args [:delta 100]} {::pred = ::args [:newPage "True"]}]}
 
-(defn where
-  )
+  "Binding based approach used in Korma is needed to implement aliases and table prefixes.")
+
+;; TODO: Difference between where and having is important. Where is executed before perfoming any aggregations --
+;; TODO: basically to filter rows in a relation before performing group by and aggregations -- having is executed after
+;; TODO: aggregations are done.
+
+(def predicates
+  {'and  'org.pathirage.freshet.dsl.core/pred-and
+   'or   'org.pathirage.freshet.dsl.core/pred-or
+   '=    'org.pathirage.freshet.dsl.core/pred-=
+   'not= 'org.pathirage.freshet.dsl.core/pred-not=
+   '<    'org.pathirage.freshet.dsl.core/pred-<
+   '>    'org.pathirage.freshet.dsl.core/pred->
+   '<=   'org.pathirage.freshet.dsl.core/pred-<=
+   '>=   'org.pathirage.freshet.dsl.core/pred->=
+   'not  'org.pathirage.freshet.dsl.core/pred-not})
+
+(defn pred-and
+  [l r]
+  {:pred :and :args [l r]})
+
+(defn pred-or
+  [l r]
+  {:pred :or :args [l r]})
+
+(defn pred-=
+  [l r]
+  {:pred := :args [l r]})
+
+(defn pred-not=
+  [l r]
+  {:pred :not= :args [l r]})
+
+(defn pred-<
+  [l r]
+  {:pred :< :args [l r]})
+
+(defn pred->
+  [l r]
+  {:pred :> :args [l r]})
+
+(defn pred-<=
+  [l r]
+  {:pred :<= :args [l r]})
+
+(defn pred->=
+  [l r]
+  {:pred :>= :args [l r]})
+
+(defn pred-not
+  [l r]
+  {:pred :not :args [l r]})
+
+(defn pred-conj
+  [l r]
+  (if (empty? l)
+    r
+    {:pred :and :args (conj l r)}))
+
+(defn parse-where
+  [form]
+  (walk/postwalk-replace predicates form))
+
+(defn- handle-where-or-having-clauses
+  [where*or-having* query form]
+  `(let [q# ~query]
+     (~where*or-having* q# ~(parse-where `~form))))
+
+(defn where*
+  "Add where clauses to the query. Clauses are a map and will be joined together via AND to the existing clauses."
+  [query clause]
+  (update-in query [:where] pred-conj clause))
+
+(defmacro where
+  "Add where clauses to query, clauses can express in clojure with keywords to refer to the stream fields.
+
+  ex: (where query (> :delta 100))
+
+
+  Supported predicates: and, or, =, not=, <, >, <=, >=, not"
+  [query form]
+  (handle-where-or-having-clauses #'where* query form))
+
+(defn having*
+  "Add having clauses to the query. Clauses are a map and will be joined together via AND to the existing clauses."
+  [query clause]
+  (update-in query [:having] pred-conj clause))
+
+(defmacro having
+  "Add where clauses to query, clauses can express in clojure with keywords to refer to the stream fields.
+
+  ex: (where query (> :delta 100))
+
+
+  Supported predicates: and, or, =, not=, <, >, <=, >=, not"
+  [query form]
+  (handle-where-or-having-clauses #'having* query form))
 
 (defn execute-query
   "Execute a continuous query. Query will first get converted to extension of relation algebra, then
