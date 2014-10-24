@@ -30,6 +30,8 @@
   (def condition [:less-than :field-name value])
   (def complex-condition [:and [:less-than :field-name value] [:equal :field-name value]]))
 
+(comment "Most of the DSL constructs are inspired by SQLKorma(http://sqlkorma.com) library by Chris Ganger.")
+
 (defn create-stream
   "Create a stream representing a topic in Kafka."
   [name]
@@ -135,6 +137,16 @@
         (window (range 60)))"
   [query & m]
   (update-in query [:modifiers] conj m))
+
+(comment
+  "How where clauses should be transformed"
+
+  (or (> :delta 100) (= :newPage "True"))
+
+  {::pred or ::args [{::pred > ::args [:delta 100]} {::pred = ::args [:newPage "True"]}]})
+
+(defn where
+  )
 
 (defn execute-query
   "Execute a continuous query. Query will first get converted to extension of relation algebra, then
