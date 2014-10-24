@@ -87,7 +87,7 @@
         field-names (not-empty (keys fields-with-types))]
     {:type      :select
      :fields    (or field-names [:*])
-     :from      [(:stream stream-name)]
+     :from      [{:stream stream-name}]
      :modifiers []
      :window    #{}
      :where     []
@@ -275,7 +275,7 @@
         (fields :symbol :bid :ask)
         (where {:symbol 'APPL'}))"
   [stream & body]
-  `(let [query# (-> (select* ~(name stream)) ~@body)]
+  `(let [query# (-> (select* ~stream) ~@body)]
      (execute-query query#)))
 
 
