@@ -36,6 +36,10 @@ public class StreamDefinition {
         return fieldTypeMap.get(field);
     }
 
+    public boolean isValidField(String field){
+        return fieldTypeMap.containsKey(field);
+    }
+
     public enum FieldType {
         INTEGER,
         STRING,
