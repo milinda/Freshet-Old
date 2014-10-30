@@ -23,6 +23,9 @@ public class Expression {
     // Not null if expression is a predicate
     private PredicateType predicate;
 
+    // Not null if expression is numerical
+    private OperatorType operator;
+
     // Not null if expression is a field
     private String field;
 
@@ -72,8 +75,20 @@ public class Expression {
         return type == ExpressionType.VALUE;
     }
 
+    public boolean isNumerical() {
+        return type == ExpressionType.NUMERICAL;
+    }
+
     public PredicateType getPredicate() {
         return predicate;
+    }
+
+    public OperatorType getOperator() {
+        return operator;
+    }
+
+    public void setOperator(OperatorType operator) {
+        this.operator = operator;
     }
 
     public void setPredicate(PredicateType predicate) {
