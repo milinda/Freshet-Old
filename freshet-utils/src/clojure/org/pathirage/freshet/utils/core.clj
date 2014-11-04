@@ -1,6 +1,6 @@
 (ns org.pathirage.freshet.utils.core
   (:import (org.pathirage.freshet.utils WikipediaActivityFeed WikipediaActivityFeed$WikipediaActivitiesToCSV))
-  (:require [clojure.tools.cli :refer [parse-opts]])
+  (:require [clojure.tools.cli :as cli])
   (:gen-class))
 
 (def cli-options
@@ -11,7 +11,7 @@
 
 (defn -main
   [& args]
-  (let [opts (parse-opts args cli-options)
+  (let [opts (cli/parse-opts args cli-options)
         feed (WikipediaActivityFeed. "irc.wikimedia.org" 6667)]
     (prn (:time (:options opts)))
     (.start feed)
