@@ -2,7 +2,8 @@
   (:import (org.pathirage.freshet.operators.select Expression ExpressionType PredicateType ExpressionEvaluator)
            (org.pathirage.freshet.data StreamDefinition StreamDefinition$FieldType StreamElement))
   (:require [clojure.test :refer :all]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [org.pathirage.freshet.utils.expressions :as expressions]))
 
 
 ;; Expression Evaluator Test
@@ -11,41 +12,7 @@
 ;;   - Collect some wikipedia activity streams and build in-memory stream
 ;;   - Define some where conditions for wikipdeia activities
 
-(def where-diff-bytes->-100
-  (let [lhs (doto (Expression. ExpressionType/FIELD)
-              (.setField "diff-bytes"))
-        rhs (doto (Expression. ExpressionType/VALUE)
-              (.setValue 100))]
-    (doto (Expression. ExpressionType/PREDICATE)
-      (.setPredicate PredicateType/GREATER_THAN)
-      (.setLhs lhs)
-      (.setRhs rhs))))
 
-(def where-diff-bytes-<-100
-  (let [lhs (doto (Expression. ExpressionType/FIELD)
-              (.setField "diff-bytes"))
-        rhs (doto (Expression. ExpressionType/VALUE)
-              (.setValue 100))]
-    (doto (Expression. ExpressionType/PREDICATE)
-      (.setPredicate PredicateType/LESS_THAN)
-      (.setLhs lhs)
-      (.setRhs rhs))))
-
-(def where-is-new-edit
-  (let [lhs (doto (Expression. ExpressionType/FIELD)
-              (.setField "is-new"))
-        rhs (doto (Expression. ExpressionType/VALUE)
-              (.setValue true))]
-    (doto (Expression. ExpressionType/PREDICATE)
-      (.setPredicate PredicateType/EQUAL)
-      (.setLhs lhs)
-      (.setRhs rhs))))
-
-(def new-edit-and->100-diff
-  (doto (Expression. ExpressionType/PREDICATE)
-    (.setPredicate PredicateType/AND)
-    (.setLhs where-diff-bytes->-100)
-    (.setRhs where-is-new-edit)))
 
 (def wikipedia-activity-stream-definition
   (let [type-map (java.util.HashMap. {"channel" StreamDefinition$FieldType/STRING
@@ -94,7 +61,7 @@
               exp-evaluator
               test-stream-element-with-diff-bytes->-100
               wikipedia-activity-stream-definition
-              where-diff-bytes->-100)))))
+              expressions/where-diff-bytes->-100)))))
   (testing "Equal boolean"
     (let [exp-evaluator (ExpressionEvaluator.)]
       (is (=
@@ -103,7 +70,7 @@
               exp-evaluator
               test-stream-element-with-diff-bytes->-100
               wikipedia-activity-stream-definition
-              where-is-new-edit)))))
+              expressions/where-is-new-edit)))))
   (testing "AND operator"
     (let [exp-evaluator (ExpressionEvaluator.)]
       (is (=
@@ -112,7 +79,7 @@
               exp-evaluator
               test-stream-element-with-diff-bytes->-100
               wikipedia-activity-stream-definition
-              new-edit-and->100-diff)))))
+              expressions/new-edit-and->100-diff)))))
   (testing "< operator"
     (let [exp-evaluator (ExpressionEvaluator.)]
       (is (=
@@ -121,7 +88,7 @@
               exp-evaluator
               test-stream-element-with-diff-bytes->-100
               wikipedia-activity-stream-definition
-              where-diff-bytes-<-100))))))
+              expressions/where-diff-bytes-<-100))))))
 
 
 

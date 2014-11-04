@@ -17,6 +17,8 @@
 
 package org.pathirage.freshet.operators.select;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Expression {
     private ExpressionType type;
 
@@ -63,18 +65,22 @@ public class Expression {
         this.type = type;
     }
 
+    @JsonIgnore
     public boolean isPredicate(){
         return type == ExpressionType.PREDICATE;
     }
 
+    @JsonIgnore
     public boolean isField(){
         return type == ExpressionType.FIELD;
     }
 
+    @JsonIgnore
     public boolean isValue(){
         return type == ExpressionType.VALUE;
     }
 
+    @JsonIgnore
     public boolean isNumerical() {
         return type == ExpressionType.NUMERICAL;
     }
