@@ -17,24 +17,24 @@
 
 package org.pathirage.freshet;
 
-public class KappaQLException extends RuntimeException {
-    public KappaQLException() {
+public class FreshetException extends RuntimeException {
+    public FreshetException() {
         super();
     }
 
-    public KappaQLException(String message) {
+    public FreshetException(String message) {
         super(message);
     }
 
-    public KappaQLException(String message, Throwable cause) {
+    public FreshetException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public KappaQLException(Throwable cause) {
+    public FreshetException(Throwable cause) {
         super(cause);
     }
 
-    protected KappaQLException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    protected FreshetException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

@@ -18,7 +18,7 @@
 package org.pathirage.freshet.operators.aggregate;
 
 import org.pathirage.freshet.Constants;
-import org.pathirage.freshet.KappaQLException;
+import org.pathirage.freshet.FreshetException;
 import org.pathirage.freshet.data.StreamDefinition;
 import org.pathirage.freshet.utils.Utilities;
 
@@ -44,7 +44,7 @@ public class AggregateFunctionFactory {
             case COUNT:
                 return new Count(field, alias, inputStreamDefs);
             default:
-                throw new KappaQLException("Unsupported aggregate type.");
+                throw new FreshetException("Unsupported aggregate type.");
         }
     }
 }

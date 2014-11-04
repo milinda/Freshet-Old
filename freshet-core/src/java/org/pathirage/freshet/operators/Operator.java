@@ -19,7 +19,7 @@ package org.pathirage.freshet.operators;
 
 import org.apache.samza.config.Config;
 import org.pathirage.freshet.Constants;
-import org.pathirage.freshet.KappaQLException;
+import org.pathirage.freshet.FreshetException;
 import org.pathirage.freshet.data.StreamDefinition;
 import org.pathirage.freshet.utils.Utilities;
 import org.slf4j.Logger;
@@ -60,7 +60,7 @@ public abstract class Operator {
     protected void initOperator(OperatorType type){
         if(config == null){
             log.error(Constants.ERROR_UNABLE_TO_FIND_CONFIGURATION);
-            throw new KappaQLException(Constants.ERROR_UNABLE_TO_FIND_CONFIGURATION);
+            throw new FreshetException(Constants.ERROR_UNABLE_TO_FIND_CONFIGURATION);
         }
 
         this.type = type;
@@ -70,7 +70,7 @@ public abstract class Operator {
             this.id = type + "-" + this.queryId + "-" + UUID.randomUUID();
         } else {
             log.error(Constants.ERROR_UNDEFINED_OPERATOR_TYPE);
-            throw new KappaQLException(Constants.ERROR_UNDEFINED_OPERATOR_TYPE);
+            throw new FreshetException(Constants.ERROR_UNDEFINED_OPERATOR_TYPE);
         }
 
         String downStreamTopic = config.get(Constants.CONF_DOWN_STREAM_TOPIC, Constants.CONST_STR_UNDEFINED);

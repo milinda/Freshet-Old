@@ -19,19 +19,64 @@ package org.pathirage.freshet.operators;
 
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.system.OutgoingMessageEnvelope;
+import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.*;
+import org.pathirage.freshet.Constants;
+import org.pathirage.freshet.FreshetException;
+import org.pathirage.freshet.data.StreamDefinition;
+import org.pathirage.freshet.data.StreamElement;
 import org.pathirage.freshet.operators.select.Expression;
+import org.pathirage.freshet.operators.select.ExpressionEvaluator;
+import org.pathirage.freshet.utils.ExpressionSerde;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SelectOperator extends Operator implements StreamTask, InitableTask{
+    private static final Logger log = LoggerFactory.getLogger(SelectOperator.class);
+
     private Expression whereClause;
+
+    private ExpressionEvaluator expressionEvaluator;
 
     @Override
     public void init(Config config, TaskContext taskContext) throws Exception {
+        this.config = config;
+
+        initOperator(OperatorType.SELECT);
+
+        this.expressionEvaluator = new ExpressionEvaluator();
+
         // Read where clause from config and build the expression.
+        String expression = config.get(Constants.CONF_SELECT_WHERE_EXPRESSION, Constants.CONST_STR_UNDEFINED);
+        if(!expression.equals(Constants.CONST_STR_UNDEFINED)){
+            Expression expr = ExpressionSerde.deserialize(expression);
+            if(!expr.isPredicate()){
+                String errMessage = "Unsupported expression type: " + expr.getType() + " expression: " + expression;
+                log.error(errMessage);
+                throw new FreshetException(errMessage);
+            }
+
+            this.whereClause = expr;
+        }
     }
 
     @Override
     public void process(IncomingMessageEnvelope incomingMessageEnvelope, MessageCollector messageCollector, TaskCoordinator taskCoordinator) throws Exception {
+        StreamElement se = (StreamElement)incomingMessageEnvelope.getMessage();
+        String inputStream = incomingMessageEnvelope.getSystemStreamPartition().getStream();
+        StreamDefinition sd = inputStreams.get(inputStream);
 
+        if(sd == null){
+            String errMessage = "Unknown stream " + inputStream;
+            log.error(errMessage);
+            throw new FreshetException(errMessage);
+        }
+
+        if(expressionEvaluator.evalPredicate(se, sd, whereClause)){
+            messageCollector.send(new OutgoingMessageEnvelope(new SystemStream(system, downStreamTopic), se));
+        }
+
+        // TODO: How down stream of select is handled. If it handled as insert/delete stream we need to modify select logic.
     }
 }

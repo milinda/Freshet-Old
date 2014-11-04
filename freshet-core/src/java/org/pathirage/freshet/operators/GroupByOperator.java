@@ -25,7 +25,7 @@ import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.*;
 import org.pathirage.freshet.Constants;
-import org.pathirage.freshet.KappaQLException;
+import org.pathirage.freshet.FreshetException;
 import org.pathirage.freshet.data.StreamElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +55,7 @@ public class GroupByOperator extends Operator implements StreamTask, InitableTas
         String groupByFields = config.get(Constants.CONF_GROUPBY_FIELDS, Constants.CONST_STR_UNDEFINED);
 
         if (groupByFields.equals(Constants.CONST_STR_UNDEFINED)) {
-            throw new KappaQLException(Constants.ERROR_UNDEFINED_GROUP_BY_FIELDS);
+            throw new FreshetException(Constants.ERROR_UNDEFINED_GROUP_BY_FIELDS);
         }
 
 
