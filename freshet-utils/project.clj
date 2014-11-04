@@ -10,7 +10,6 @@
                            [org.slf4j/slf4j-log4j12 "1.6.2"]
                            [com.fasterxml.jackson.core/jackson-core "2.4.0"]
                            [com.fasterxml.jackson.core/jackson-databind "2.4.0"]
-                           [irclj "0.5.0-alpha4"]
                            [net.sf.opencsv/opencsv "2.0"]
                            [org.clojure/tools.cli "0.3.1"]]
             :main org.pathirage.freshet.utils.core
