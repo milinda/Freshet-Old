@@ -20,11 +20,14 @@ package org.pathirage.freshet.operators;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
+import org.pathirage.freshet.operators.select.Expression;
 
 public class SelectOperator extends Operator implements StreamTask, InitableTask{
+    private Expression whereClause;
+
     @Override
     public void init(Config config, TaskContext taskContext) throws Exception {
-
+        // Read where clause from config and build the expression.
     }
 
     @Override

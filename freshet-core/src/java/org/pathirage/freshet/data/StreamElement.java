@@ -67,6 +67,10 @@ public class StreamElement {
         return (Float)fields.get(fieldName);
     }
 
+    public Long getLongField(String fieldName) {
+        return (Long)fields.get(fieldName);
+    }
+
     public Boolean getBoolField(String fieldName){
         return (Boolean)fields.get(fieldName);
     }

@@ -80,6 +80,12 @@ public class ExpressionEvaluator {
             return (lhsValue.equals(rhsValue) ? 0 : -1);
         } else if(lhsValue instanceof Number && rhsValue instanceof Number){
             return ((Number)lhsValue).doubleValue() - ((Number)rhsValue).doubleValue();
+        } else if(lhsValue instanceof Boolean && rhsValue instanceof Boolean) {
+            if((Boolean)lhsValue == (Boolean)rhsValue){
+                return 0;
+            } else {
+                return -1;
+            }
         } else {
             throw new ExpressionEvaluationException("Unsupported expression.");
         }
@@ -130,6 +136,8 @@ public class ExpressionEvaluator {
                 return se.getStringField(fieldName);
             } else if (fieldType == StreamDefinition.FieldType.INTEGER) {
                 return se.getIntegerField(fieldName).doubleValue();
+            } else if (fieldType == StreamDefinition.FieldType.LONG) {
+                return se.getLongField(fieldName).doubleValue();
             } else if (fieldType == StreamDefinition.FieldType.BOOL) {
                 return se.getBoolField(fieldName);
             } else if (fieldType == StreamDefinition.FieldType.FLOAT) {

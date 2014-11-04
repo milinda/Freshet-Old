@@ -39,6 +39,8 @@ public class Constants {
     public static final String CONF_AGGREGATE_FIELD = "field";
     public static final String CONF_AGGREGATE_ALIAS = "alias";
 
+    public static final String CONF_SELECT_WHERE_EXPRESSION = "org.pathirage.freshet.select.where.expression";
+
     public static final String ERROR_UNDEFINED_OUTPUT_STREAM = "Undefined output stream.";
     public static final String ERROR_UNABLE_TO_FIND_CONFIGURATION = "Unable to find the configuration.";
     public static final String ERROR_UNDEFINED_OPERATOR_TYPE = "Undefined operator type.";

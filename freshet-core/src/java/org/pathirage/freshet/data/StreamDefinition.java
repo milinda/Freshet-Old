@@ -17,12 +17,17 @@
 
 package org.pathirage.freshet.data;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class StreamDefinition {
 
     private Map<String, FieldType> fieldTypeMap;
+
+    public StreamDefinition(){
+        fieldTypeMap = new HashMap<String, FieldType>();
+    }
 
     public StreamDefinition(Map<String, FieldType> fieldTypeMap){
         this.fieldTypeMap = fieldTypeMap;
@@ -40,11 +45,16 @@ public class StreamDefinition {
         return fieldTypeMap.containsKey(field);
     }
 
+    public void setFieldTypeMap(Map<String, FieldType> fieldTypeMap) {
+        this.fieldTypeMap.putAll(fieldTypeMap);
+    }
+
     public enum FieldType {
         INTEGER,
         STRING,
         BOOL,
         FLOAT,
-        TIME
+        TIME,
+        LONG
     }
 }
