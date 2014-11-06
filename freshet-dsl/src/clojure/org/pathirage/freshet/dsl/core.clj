@@ -53,6 +53,7 @@
   [name]
   {:stream name
    :name   name
+   :ns "freshet"
    :pk     :id
    :fields []
    :ts     :timestamp})
@@ -70,11 +71,45 @@
   [stream s]
   (assoc stream :ts (keyword s)))
 
+(defn ns
+  [stream ns]
+  (assoc stream :ns ns))
+
 (defmacro defstream
   "Define a stream representing a topic in Kafka, applying functions in the body which changes the stream definition."
   [stream & body]
   `(let [s# (-> (create-stream ~(name stream)) ~@body)]
      (def ~stream s#)))
+
+(def freshet-type-map
+  {:integer "int"
+   :string "string"
+   :long "long"
+   :double "double"
+   :float "float"})
+
+(defn- freshet-type-to-avro-type
+  [t]
+  (let [at (get freshet-type-map t)]
+    (if at
+      at
+      (throw (Exception. (str "Invalid type " t))))))
+
+(defn- freshet-fields-to-avro-fields
+  [fields]
+  (let [fields-seq (seq fields)]
+    (vec (map (fn [e] {"name" (first e) "type" (freshet-type-to-avro-type (second e))}) fields-seq))))
+
+(defn stream-to-avro-schema
+  "Generate avro schema from stream definition. Avro schema needs a namespace. Default is 'freshet'."
+  [stream]
+  (let [fields (:fields stream)
+        ns (:ns stream)
+        name (str (:name stream))]
+    {"namespace" ns
+     "type" "record"
+     "name" name
+     "fields" (freshet-fields-to-avro-fields fields)}))
 
 (defn select*
   "Creates the base query configuration for the given stream."
