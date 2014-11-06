@@ -31,11 +31,11 @@ import java.util.UUID;
 
 /* In KappaQL, query is transformed in to execution plan which consists of DAG of operators(Samza jobs) connected via
  * Kakfa queues. */
-public abstract class Operator {
-    private static final Logger log = LoggerFactory.getLogger(Operator.class);
+public abstract class FreshetOperator {
+    private static final Logger log = LoggerFactory.getLogger(FreshetOperator.class);
 
     /* Type of the query operator */
-    private OperatorType type;
+    private FreshetOperatorType type;
 
     /* Identify the Samza job specific to a query */
     private String id;
@@ -57,7 +57,7 @@ public abstract class Operator {
     /* Definitions of output streams of this operator */
     protected Map<String, StreamDefinition> outputStreams;
 
-    protected void initOperator(OperatorType type){
+    protected void initOperator(FreshetOperatorType type){
         if(config == null){
             log.error(Constants.ERROR_UNABLE_TO_FIND_CONFIGURATION);
             throw new FreshetException(Constants.ERROR_UNABLE_TO_FIND_CONFIGURATION);
@@ -107,7 +107,7 @@ public abstract class Operator {
     }
 
 
-    public OperatorType getType() {
+    public FreshetOperatorType getType() {
         return type;
     }
 

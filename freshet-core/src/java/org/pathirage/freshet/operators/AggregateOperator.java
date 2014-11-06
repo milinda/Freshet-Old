@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class AggregateOperator extends Operator implements StreamTask, InitableTask {
+public class AggregateOperator extends FreshetOperator implements StreamTask, InitableTask {
     private static final Logger log = LoggerFactory.getLogger(AggregateOperator.class);
 
     /* Aggregates map. Single query can have multiple aggregates. */

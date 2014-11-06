@@ -32,7 +32,7 @@ import org.pathirage.freshet.utils.ExpressionSerde;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SelectOperator extends Operator implements StreamTask, InitableTask{
+public class SelectOperator extends FreshetOperator implements StreamTask, InitableTask{
     private static final Logger log = LoggerFactory.getLogger(SelectOperator.class);
 
     private Expression whereClause;
@@ -43,7 +43,7 @@ public class SelectOperator extends Operator implements StreamTask, InitableTask
     public void init(Config config, TaskContext taskContext) throws Exception {
         this.config = config;
 
-        initOperator(OperatorType.SELECT);
+        initOperator(FreshetOperatorType.SELECT);
 
         this.expressionEvaluator = new ExpressionEvaluator();
 

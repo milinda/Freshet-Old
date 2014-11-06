@@ -41,7 +41,7 @@ import java.util.*;
  * of the group-by attribute its hard to do static planning. Current solution is to use Kafka topic's partitioning to
  * parallelize the execution among multiple down stream aggregators.
  */
-public class GroupByOperator extends Operator implements StreamTask, InitableTask {
+public class GroupByOperator extends FreshetOperator implements StreamTask, InitableTask {
     private static final Logger log = LoggerFactory.getLogger(GroupByOperator.class);
 
     /* Order is important. */
@@ -49,7 +49,7 @@ public class GroupByOperator extends Operator implements StreamTask, InitableTas
 
     @Override
     public void init(Config config, TaskContext taskContext) throws Exception {
-        initOperator(OperatorType.GROUP_BY);
+        initOperator(FreshetOperatorType.GROUP_BY);
 
         /* Comma separated values of group by fields */
         String groupByFields = config.get(Constants.CONF_GROUPBY_FIELDS, Constants.CONST_STR_UNDEFINED);

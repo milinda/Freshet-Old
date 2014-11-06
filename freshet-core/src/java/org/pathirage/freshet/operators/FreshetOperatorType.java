@@ -17,7 +17,7 @@
 
 package org.pathirage.freshet.operators;
 
-public enum OperatorType {
+public enum FreshetOperatorType {
     WINDOW,
     SELECT,
     PROJECT,

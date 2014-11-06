@@ -45,7 +45,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * restart input stream read will last from the last read tuple and can recover the synopsis from local storage
  * assuming operator get restarted in same node.
  */
-public class WindowOperator extends Operator implements StreamTask, InitableTask {
+public class WindowOperator extends FreshetOperator implements StreamTask, InitableTask {
     private static Logger log = LoggerFactory.getLogger(WindowOperator.class);
 
     /* True if this a time-based sliding window. */
@@ -82,7 +82,7 @@ public class WindowOperator extends Operator implements StreamTask, InitableTask
     public void init(Config config, TaskContext taskContext) throws Exception {
         this.config = config;
 
-        initOperator(OperatorType.WINDOW);
+        initOperator(FreshetOperatorType.WINDOW);
 
         String range = config.get(Constants.CONF_WINDOW_RANGE, Constants.CONST_STR_UNDEFINED);
         if (!range.equals(Constants.CONST_STR_UNDEFINED)) {

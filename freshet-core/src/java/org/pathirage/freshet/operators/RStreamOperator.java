@@ -21,7 +21,7 @@ import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 
-public class ProjectOperator extends FreshetOperator implements StreamTask, InitableTask{
+public class RStreamOperator extends FreshetOperator implements StreamTask, InitableTask {
     @Override
     public void init(Config config, TaskContext taskContext) throws Exception {
 
