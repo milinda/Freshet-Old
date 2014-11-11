@@ -36,21 +36,21 @@
     </file>
     <!-- filtered=true, so we do variable expansion so the yarn package path 
       always points to the correct spot on any machine -->
-    <file>
-      <source>${basedir}/src/main/config/wikipedia-feed.properties</source>
-      <outputDirectory>config</outputDirectory>
-      <filtered>true</filtered>
-    </file>
-    <file>
-      <source>${basedir}/src/main/config/wikipedia-parser.properties</source>
-      <outputDirectory>config</outputDirectory>
-      <filtered>true</filtered>
-    </file>
-    <file>
-      <source>${basedir}/src/main/config/wikipedia-stats.properties</source>
-      <outputDirectory>config</outputDirectory>
-      <filtered>true</filtered>
-    </file>
+    <!--<file>-->
+      <!--<source>${basedir}/src/main/config/wikipedia-feed.properties</source>-->
+      <!--<outputDirectory>config</outputDirectory>-->
+      <!--<filtered>true</filtered>-->
+    <!--</file>-->
+    <!--<file>-->
+      <!--<source>${basedir}/src/main/config/wikipedia-parser.properties</source>-->
+      <!--<outputDirectory>config</outputDirectory>-->
+      <!--<filtered>true</filtered>-->
+    <!--</file>-->
+    <!--<file>-->
+      <!--<source>${basedir}/src/main/config/wikipedia-stats.properties</source>-->
+      <!--<outputDirectory>config</outputDirectory>-->
+      <!--<filtered>true</filtered>-->
+    <!--</file>-->
   </files>
   <dependencySets>
     <dependencySet>
