@@ -1,6 +1,7 @@
 (ns org.pathirage.freshet.dsl.core
   (:refer-clojure :exclude [range])
-  (:require [clojure.walk :as walk]))
+  (:require [clojure.walk :as walk]
+            [clojure.set :as set]))
 
 (comment
   "Defining streams"
@@ -147,7 +148,7 @@
   [query & fields]
   (let [aliases (set (map second (filter vector? fields)))]
     (-> query
-        (update-in [:aliases] clojure.set/union aliases)
+        (update-in [:aliases] set/union aliases)
         (update-fields fields))))
 
 ;; TODO: use named parameters for configuring sliding windows.
