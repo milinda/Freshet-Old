@@ -1,9 +1,6 @@
 (ns org.pathirage.freshet.dsl.compiler
   (:import (org.pathirage.freshet.operators.select Expression ExpressionType PredicateType)))
 
-(comment
-  (head "Process of translating CQL to Temporal Stream Algebra*")
-  (* "Just using the name from http://www.en.pms.ifi.lmu.de/publications/PMS-FB/PMS-FB-2012-7/PMS-FB-2012-7-paper.pdf"))
 
 (defn- pred-to-pred-type
   [pred]
@@ -32,21 +29,24 @@
                                                       (.setValue lhs))
                    (map? lhs) (compile-expression lhs)
                    :else (throw (Exception. (str "Unknown argument: " lhs))))
-        rhs-expr (cond
-                   (symbol? rhs) (doto (Expression. ExpressionType/FIELD)
-                                   (.setField (str rhs)))
-                   (or (number? rhs) (string? rhs)) (doto (Expression. ExpressionType/VALUE)
-                                                      (.setValue rhs))
-                   (map? rhs) (compile-expression rhs)
-                   :else (throw (Exception. (str "Unknown argument: " rhs))))]
-    (if pred
-      (doto (Expression. ExpressionType/PREDICATE)
-        (.setPredicate (pred-to-pred-type pred))
-        (.setLhs (compile-expression lhs))
-        (.setRhs (compile-expression rhs)))
-      (if operator
-        (throw (Exception. "Operators are not yet supported at DSL level."))
-        (throw (Exception. (str "Unknow expression: " expr)))))))
+        rhs-expr (if (not (= pred :not))
+                   (cond
+                     (symbol? rhs) (doto (Expression. ExpressionType/FIELD)
+                                     (.setField (str rhs)))
+                     (or (number? rhs) (string? rhs)) (doto (Expression. ExpressionType/VALUE)
+                                                        (.setValue rhs))
+                     (map? rhs) (compile-expression rhs)
+                     :else (throw (Exception. (str "Unknown argument: " rhs)))))]
+    (cond
+      (and pred (not (= pred :not))) (doto (Expression. ExpressionType/PREDICATE)
+                                       (.setPredicate (pred-to-pred-type pred))
+                                       (.setLhs (compile-expression lhs))
+                                       (.setRhs (compile-expression rhs)))
+      (and pred (= pred :not)) (doto (Expression. ExpressionType/PREDICATE)
+                                 (.setPredicate (pred-to-pred-type pred))
+                                 (.setLhs (compile-expression lhs)))
+      operator (throw (Exception. "Operators are not yet supported at DSL level."))
+      :else (throw (Exception. (str "Unsupported expression: " expr))))))
 
 (defn sql-to-raexp
   "Converts SQL statement to relational algebra expression"

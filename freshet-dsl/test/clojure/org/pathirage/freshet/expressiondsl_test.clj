@@ -1,4 +1,4 @@
-(ns org.pathirage.freshet.expression-test
+(ns org.pathirage.freshet.expressiondsl-test
   (:require [org.pathirage.freshet.dsl.core :as fcore]
             [clojure.test :refer :all]))
 
