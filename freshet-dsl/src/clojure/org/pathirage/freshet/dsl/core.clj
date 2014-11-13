@@ -82,36 +82,6 @@
   `(let [s# (-> (create-stream ~(name stream)) ~@body)]
      (def ~stream s#)))
 
-(def freshet-type-map
-  {:integer "int"
-   :string "string"
-   :long "long"
-   :double "double"
-   :float "float"})
-
-(defn- freshet-type-to-avro-type
-  [t]
-  (let [at (get freshet-type-map t)]
-    (if at
-      at
-      (throw (Exception. (str "Invalid type " t))))))
-
-(defn- freshet-fields-to-avro-fields
-  [fields]
-  (let [fields-seq (seq fields)]
-    (vec (map (fn [e] {"name" (first e) "type" (freshet-type-to-avro-type (second e))}) fields-seq))))
-
-(defn stream-to-avro-schema
-  "Generate avro schema from stream definition. Avro schema needs a namespace. Default is 'freshet'."
-  [stream]
-  (let [fields (:fields stream)
-        ns (:ns stream)
-        name (str (:name stream))]
-    {"namespace" ns
-     "type" "record"
-     "name" name
-     "fields" (freshet-fields-to-avro-fields fields)}))
-
 (defn select*
   "Creates the base query configuration for the given stream."
   [stream]
@@ -122,8 +92,8 @@
         fields-with-types (:fields stream)
         field-names (not-empty (keys fields-with-types))]
     {:type      :select
-     :fields    (or field-names [:*])
-     :from      [{:stream stream-name}]
+     :fields    [:*]
+     :from      [{:stream stream :stream-name stream-name}]
      :modifiers []
      :window    #{}
      :where     []
@@ -312,6 +282,6 @@
         (where {:symbol 'APPL'}))"
   [stream & body]
   `(let [query# (-> (select* ~stream) ~@body)]
-     (execute-query query#)))
+     query#))
 
 
