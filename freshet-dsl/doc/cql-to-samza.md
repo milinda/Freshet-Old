@@ -39,5 +39,11 @@ After optimizations, this above will transformed into:
   (where (= :symbol "APPL")))
 ```
 
+Finally to Samza job graph which looks like following:
 
+```clojure
+{:operator :window :tuplebased true :range 1 :query-id "some-id" :input-stream "topic-from-stream-def" :output-stream "qid-window-out-market-feed" :input-streams [{:stream "market-feed" ...}] :output-streams [{:stream "qid-window-out-market-feed" ..}]}
+ -> {:operator :select :where-exp "<JSON Encoded Expression>" :input-stream "qid-window-out-market-feed" :output-stream "qid-select-out-market-feed" :input-streams [{:stream "qid-window-out-market-feed"}] :output-streams [{:stream "qid-select-out-rstream-market-feed" ..}]}
+ -> {:operator :rstream :input-stream "qid-select-out-market-feed"}
+```
 
