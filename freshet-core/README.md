@@ -1,4 +1,4 @@
-# kappaql-core
+# freshet-core
 
 A Clojure library designed to ... well, that part is up to you.
 
@@ -8,7 +8,7 @@ FIXME
 
 ## License
 
-Copyright © 2014 FIXME
+Copyright © 2014 Milinda Pathirage
 
-Distributed under the Eclipse Public License either version 1.0 or (at
+Distributed under the Apache License Version 2.0 or (at
 your option) any later version.
