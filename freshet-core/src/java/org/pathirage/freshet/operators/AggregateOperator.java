@@ -36,6 +36,10 @@ public class AggregateOperator extends FreshetOperator implements StreamTask, In
 
     @Override
     public void init(Config config, TaskContext taskContext) throws Exception {
+        this.config = config;
+
+        initOperator(FreshetOperatorType.AGGREGATE);
+
         /* To specify the aggregates, let assume we use prefixed property with 1, 2, 3, .. to specify the order. */
         Config aggregatesConfig = config.subset(Constants.CONF_AGGREGATE_AGGREGATES);
 

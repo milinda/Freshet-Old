@@ -118,4 +118,8 @@ public abstract class FreshetOperator {
     public String getQueryId() {
         return queryId;
     }
+
+    public String buildLogMessage(String error){
+        return String.format("Query: %s, Operator Type: %s, Operator ID: %s, System: %s, Error: %s", queryId, type, id, system, error);
+    }
 }

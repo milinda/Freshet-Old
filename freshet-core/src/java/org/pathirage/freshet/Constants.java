@@ -39,6 +39,10 @@ public class Constants {
     public static final String CONF_AGGREGATE_FIELD = "field";
     public static final String CONF_AGGREGATE_ALIAS = "alias";
 
+    public static final String CONF_INPUT_STREAM = "org.pathirage.freshet.input.stream";
+
+    public static final String CONF_STREAM_AVRO_SCHEMA = "org.pathirage.freshet.stream.avro.schema";
+
     public static final String CONF_SELECT_WHERE_EXPRESSION = "org.pathirage.freshet.select.where.expression";
 
     public static final String ERROR_UNDEFINED_OUTPUT_STREAM = "Undefined output stream.";

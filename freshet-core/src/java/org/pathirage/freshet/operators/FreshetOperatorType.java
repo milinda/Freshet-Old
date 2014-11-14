@@ -22,5 +22,6 @@ public enum FreshetOperatorType {
     SELECT,
     PROJECT,
     GROUP_BY,
-    AGGREGATE
+    AGGREGATE,
+    DESERIALIZE
 }
