@@ -84,18 +84,20 @@
 
 (defn select*
   "Creates the base query configuration for the given stream."
-  [stream]
-  (let [stream (if (keyword? stream)
-                 (name stream)
-                 stream)
-        stream-name (:name stream)
-        fields-with-types (:fields stream)
-        field-names (not-empty (keys fields-with-types))]
+  [r2s-with-fields]
+  (let [fields (cond
+                 (map? r2s-with-fields) (:fields r2s-with-fields)
+                 (vector? r2s-with-fields) r2s-with-fields
+                 :else (throw (Exception. (str "Unsupported fields spec: " r2s-with-fields))))
+        r2s (if (map? r2s-with-fields)
+              (:r2s-operator r2s-with-fields)
+              :istream)]
     {:type      :select
-     :fields    [:*]
-     :from      [{:stream stream :stream-name stream-name}]
+     :fields    fields
+     :r2s       r2s
+     :from      []
      :modifiers []
-     :window    #{}
+     :window    {:type :window :window-type :unbounded}
      :where     []
      :having    []
      :aliases   #{}
@@ -150,7 +152,7 @@
   ex: (window (range 30))"
   [query & wm]
   `(let [window# (-> (window*) ~@wm)]
-     (update-in ~query [:window] clojure.set/union window#)))
+     (update-in ~query [:window] merge window#)))
 
 (defn modifiers
   "Set modifier to the select query to filter which results are returned.
@@ -266,6 +268,14 @@
   [query form]
   (handle-where-or-having-clauses #'having* query form))
 
+(defn istream
+  [fields-with-renaming]
+  {:r2s-operator :istream :fields fields-with-renaming})
+
+(defn rstream
+  [fields-with-renaming]
+  {:r2s-operator :rstream :fields fields-with-renaming})
+
 (defn execute-query
   "Execute a continuous query. Query will first get converted to extension of relation algebra, then
   to physical query plan before getting deployed in to the stream processing engine."
@@ -280,8 +290,8 @@
   ex: (select stock-ticks
         (fields :symbol :bid :ask)
         (where {:symbol 'APPL'}))"
-  [stream & body]
-  `(let [query# (-> (select* ~stream) ~@body)]
+  [fwm & body]
+  `(let [query# (-> (select* ~fwm) ~@body)]
      query#))
 
 
