@@ -142,17 +142,25 @@
   [window]
   (assoc window :window-type :unbounded))
 
-(defn window*
+(defn window*_
   []
   {:type :window})
 
 ;; TODO: How to handle multiple stream situation. We need to change how from clause is specified in DSL.
-(defmacro window
+(defmacro window_
   "Set windowing method for stream-to-relational mapping.
   ex: (window (range 30))"
   [query & wm]
   `(let [window# (-> (window*) ~@wm)]
      (update-in ~query [:window] merge window#)))
+
+(defn window*
+  [stream]
+  {:stream stream})
+
+(defmacro window
+  [stream & wspec]
+  `(-> (window* ~stream) ~@wspec))
 
 (defn modifiers
   "Set modifier to the select query to filter which results are returned.
@@ -276,6 +284,16 @@
   [fields-with-renaming]
   {:r2s-operator :rstream :fields fields-with-renaming})
 
+(defn from*
+  [query f]
+  (let [normalized-f (vec (map #(if (contains? % :window-type) % {:window-type :unbounded :stream %}) f))]
+    (update-in query [:from] into normalized-f)))
+
+(defmacro from
+  [query s2r]
+  `(from* ~query ~s2r))
+
+; (update-in query [:from] conj normalized-from)
 (defn execute-query
   "Execute a continuous query. Query will first get converted to extension of relation algebra, then
   to physical query plan before getting deployed in to the stream processing engine."
