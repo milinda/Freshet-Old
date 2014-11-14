@@ -1,4 +1,18 @@
-# Sample CQL to Samza Job Graph Conversions
+# Freshet DSL Compilation
+
+## Freshet DSL defaults (from CQL)
+
+- When a stream is referenced in a Freshet query where relation is expected, an *Unbounded* window is applied to the stream by default.
+- *Istream* operator is added by default whenever the query produces a *monotonic* relation. Static monotonicity test, is
+used ~ base relation is monotonic if relation is append only, like ```(window (unbounded))``` and join of two monotonic relations also is monotonic.
+- If we can't determine the monotonicity, we depends on the query author.
+- For inner subquery, we add an *Istream* operator by default whenever the subquery is monotonic. Other case is still ambiguous.
+- *Istream-Unbounded* is default when window specification is omitted.
+
+## Common Patterns
+
+- **Filters** are implemented using *Istream-Unbounded* window combination or an *Rstream-Now* window combination.
+- When a stream is joined with a relation, it is usually most meaningful to apply a *Now* window over the stream and *Rstream* operator over the join result.
 
 ## Market feed stream definition
 
