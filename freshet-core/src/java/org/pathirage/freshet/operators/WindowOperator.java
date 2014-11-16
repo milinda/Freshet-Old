@@ -110,6 +110,7 @@ public class WindowOperator extends FreshetOperator implements StreamTask, Inita
         this.store = (KeyValueStore<String, QueueNode>) taskContext.getStore("windowing-synopses");
         this.metadataStore = (KeyValueStore<String, String>) taskContext.getStore("windowing-metadata");
 
+        // TODO: Implement time based sliding window handler.
         if(this.tupleBased && !this.timeBased){
             this.windowHandler = new TupleBasedSlidingWindowHandler(this.rows, store, metadataStore, this.system);
         }

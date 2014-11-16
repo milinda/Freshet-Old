@@ -25,6 +25,13 @@ public class Constants {
     public static final String CONF_SYSTEM = "org.pathirage.kappaql.system";
     public static final String CONF_DOWN_STREAM_TOPIC = "org.pathirage.kappaql.downstream.topic";
 
+    public static final String CONF_SAMZA_TASK_INPUTS = "task.inputs";
+    public static final String CONF_SAMZA_TASK_CLASS = "task.class";
+    public static final String CONF_SAMZA_TASK_CHECKPOINT_FACTORY = "task.checkpoint.factory";
+    public static final String CONF_SAMZA_TASK_CHECKPOINT_SYSTEM = "task.checkpoint.system";
+    public static final String CONF_SAMZA_TASK_CHECKPOINT_REPLICATION_FACTOR = "task.checkpoint.replication.factor";
+    public static final String CONF_SAMZA_JOB_NAME = "job.name";
+
     public static final String CONF_OPERATOR_INPUT_STREAMS = "org.pathirage.kappaql.input.streams.";
     public static final String CONF_OPERATOR_OUTPUT_STREAMS = "org.pathirage.kappaql.output.streams.";
 

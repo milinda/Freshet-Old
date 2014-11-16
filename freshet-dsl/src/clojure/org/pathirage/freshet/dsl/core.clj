@@ -3,50 +3,6 @@
   (:require [clojure.walk :as walk]
             [clojure.set :as set]))
 
-(comment
-  "Defining streams"
-  (defstream stream
-             (stream-fields [:symbol :string
-                             :bid :float
-                             :ask :float
-                             :bid-size :float
-                             :ask-size :float
-                             :quote-time :time
-                             :trade-time :time
-                             :exchange :string
-                             :volume :float])
-             (ts (now)))
-
-  {:having [],
-   :where {:pred :and,
-           :args [{:pred :and,
-                   :args [{:pred :=, :args [:symbol "APPL"]} {:pred :>, :args [:volume 2000]}]}]},
-   :group [],
-   :fields [:*],
-   :joins [],
-   :type :select,
-   :window #{},
-   :modifiers [],
-   :from [nil],
-   :aliases #{},
-   :aggregate []}
-
-
-  "Querying"
-  (select stream
-          (fields :symbol :bid :bid-size)
-          (where {:age (less-than 34)})
-
-          "Sliding Windows"
-          (select stream
-                  (fields :symbol :bid :ask :exchange)
-                  (window)))
-
-  "Relation Algebric Expression"
-  (def query {:stream stock-ticks :project [name, xx] :select condition})
-  (def condition [:less-than :field-name value])
-  (def complex-condition [:and [:less-than :field-name value] [:equal :field-name value]]))
-
 (comment "Most of the DSL constructs are inspired by SQLKorma(http://sqlkorma.com) library by Chris Ganger.")
 
 (defn create-stream
@@ -293,7 +249,6 @@
   [query s2r]
   `(from* ~query ~s2r))
 
-; (update-in query [:from] conj normalized-from)
 (defn execute-query
   "Execute a continuous query. Query will first get converted to extension of relation algebra, then
   to physical query plan before getting deployed in to the stream processing engine."
