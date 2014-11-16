@@ -8,7 +8,10 @@
                     :diff-bytes :integer
                     :is-talk :boolean
                     :is-new :boolean
-                    :is-bot-edit :boolean])))
+                    :is-bot-edit :boolean
+                    :timestamp :long])
+    (ts :timestamp)))
 
+; TODO: Clojure maps describing wikipedia activity feed and window operator jobs. Use samza default conf.
 (defn wikipedia-activity-feed-job [])
 (defn example-window-op-job [])

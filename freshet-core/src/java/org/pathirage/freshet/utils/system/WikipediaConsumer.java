@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.pathirage.freshet.helpers.wikipedia.system;
+package org.pathirage.freshet.utils.system;
 
 import org.apache.samza.Partition;
 import org.apache.samza.metrics.MetricsRegistry;
