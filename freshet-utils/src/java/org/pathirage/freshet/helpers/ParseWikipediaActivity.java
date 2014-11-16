@@ -15,7 +15,7 @@
  *
  */
 
-package org.pathirage.freshet.utils;
+package org.pathirage.freshet.helpers;
 
 import java.util.HashMap;
 import java.util.Map;

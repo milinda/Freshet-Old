@@ -1,4 +1,4 @@
-(defproject org.pathirage.freshet/freshet-utils "0.1.0-SNAPSHOT"
+(defproject org.pathirage.freshet/freshet-helpers "0.1.0-SNAPSHOT"
             :description "Freshet Utils: Tools and Utilities of Freshet project."
             :url "http://github.com/milinda/Freshet"
             :license {:name "Apache License, Version 2.0"
@@ -11,7 +11,14 @@
                            [com.fasterxml.jackson.core/jackson-core "2.4.0"]
                            [com.fasterxml.jackson.core/jackson-databind "2.4.0"]
                            [net.sf.opencsv/opencsv "2.0"]
-                           [org.clojure/tools.cli "0.3.1"]]
+                           [org.clojure/tools.cli "0.3.1"]
+                           [org.apache.samza/samza-api "0.8.0-SNAPSHOT"]
+                           [org.apache.samza/samza-serializers_2.10 "0.8.0-SNAPSHOT"]
+                           [org.apache.samza/samza-core_2.10 "0.8.0-SNAPSHOT"]
+                           [org.apache.samza/samza-yarn_2.10 "0.8.0-SNAPSHOT"]
+                           [org.apache.samza/samza-kv_2.10 "0.8.0-SNAPSHOT"]
+                           [org.apache.samza/samza-kafka_2.10 "0.8.0-SNAPSHOT"]
+                           [org.pathirage.freshet/freshet-core "0.1.0-SNAPSHOT"]]
             :main org.pathirage.freshet.utils.core
             :source-paths ["src/clojure"]
             :java-source-paths ["src/java"]

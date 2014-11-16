@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.pathirage.freshet.utils;
+package org.pathirage.freshet.helpers;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.fasterxml.jackson.databind.ObjectMapper;

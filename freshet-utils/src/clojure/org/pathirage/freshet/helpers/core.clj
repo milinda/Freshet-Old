@@ -1,5 +1,5 @@
 (ns org.pathirage.freshet.utils.core
-  (:import (org.pathirage.freshet.utils WikipediaActivityFeed WikipediaActivityFeed$WikipediaActivitiesToCSV))
+  (:import (helpers WikipediaActivityFeed WikipediaActivityFeed$WikipediaActivitiesToCSV))
   (:require [clojure.tools.cli :as cli])
   (:gen-class))
 
