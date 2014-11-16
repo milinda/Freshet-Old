@@ -1,1 +1,1 @@
-{"operator": }
+{"predicate": "AND", "lhs": {"predicate" : "==", "lhs" : {"type": "field", "value": "name"}, "rhs" : {"type": "value", "value": "Milinda"}}, "rhs": {"predicate" : ">", "lhs" : {"type": "field", "value": "age"}, "rhs" : {"type": "value", "value": 25}}}
