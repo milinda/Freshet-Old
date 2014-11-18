@@ -42,7 +42,7 @@ public class AvroSerde implements Serde<GenericRecord> {
 
     @Override
     public GenericRecord fromBytes(byte[] bytes) {
-        GenericDatumReader<GenericRecord> serveReader = new GenericDatumReader<>(avroSchema);
+        GenericDatumReader<GenericRecord> serveReader = new GenericDatumReader<GenericRecord>(avroSchema);
         try {
             return serveReader.read(null, DecoderFactory.get().binaryDecoder(bytes, null));
         } catch (IOException e) {
@@ -53,7 +53,7 @@ public class AvroSerde implements Serde<GenericRecord> {
 
     @Override
     public byte[] toBytes(GenericRecord genericRecord) {
-        GenericDatumWriter<GenericRecord> serveWriter = new GenericDatumWriter<>(avroSchema);
+        GenericDatumWriter<GenericRecord> serveWriter = new GenericDatumWriter<GenericRecord>(avroSchema);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
             serveWriter.write(genericRecord, EncoderFactory.get().binaryEncoder(out, null));

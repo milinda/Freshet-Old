@@ -3,7 +3,8 @@
            [org.apache.samza.config.factories PropertiesConfigFactory]
            [org.apache.samza.job JobRunner]
            [java.net URI])
-  (:require [clojurewerkz.propertied.properties :as props]))
+  (:require [clojurewerkz.propertied.properties :as props]
+            [org.pathirage.freshet.dsl.helpers :as fhelpers]))
 
 (comment
   "Sample Samza Property File
@@ -44,14 +45,19 @@
   systems.kafka.streams.metrics.samza.msg.serde=metrics
   ")
 
-(defn run-samza-job
+(defn run-samza-job*
   [props-file]
   (let [config-factory (PropertiesConfigFactory.)
-        config (.getConfig config-factory (URI. props-file))
+        config (.getConfig config-factory props-file)
         job-runner (JobRunner. config)]
     (.run job-runner)))
 
-(defn default-props
+(defn run-samza-job
+  [props-file]
+  (let [hello-samza-dir "/Users/mpathira/Workspace/Personal/Code/samza/hello-samza"]
+    (clojure.java.shell/sh "deploy/samza/bin/run-job.sh" (str "--config-factory=org.apache.samza.config.factories.PropertiesConfigFactory " "--config-path=" props-file) :dir hello-samza-dir)))
+
+(defn default-with-mterics-props
   "Create map of default properties for Freshet Samza jobs.
 
   zookeeper-list should look like - zk1.example.com:2181,zk2.example.com:2181,..
@@ -99,9 +105,9 @@
     - Output stream definitions
     - Range or Rows"
   [op-config]
-  (let [wprops (default-props (:zookeeper op-config) (:broker op-config) (:yarn-package op-config))
+  (let [wprops (default-with-mterics-props (:zookeeper op-config) (:broker op-config) (:yarn-package op-config))
         wprops (-> (assoc wprops Constants/CONF_SAMZA_JOB_NAME (:job-name op-config))
-                   (assoc wprops Constants/CONF_QUERY_ID (:query-id op-config))
+                   (assoc Constants/CONF_QUERY_ID (:query-id op-config))
                    (assoc Constants/CONF_INPUT_STREAM (:input-stream op-config))
                    (assoc Constants/CONF_DOWN_STREAM_TOPIC (:output-stream op-config))
                    (assoc Constants/CONF_SAMZA_TASK_INPUTS (str "kafka." (:input-stream op-config)))
@@ -116,9 +122,17 @@
     (props/store-to wprops properties-file)
     (.getAbsolutePath properties-file)))
 
+(defmacro submitjob
+  [gen-job-props op-config]
+  `(let [jobprops# (~gen-job-props ~op-config)]
+     (prn jobprops#)
+     (run-samza-job jobprops#)))
+
 (defn submit-window-op-job
   [op-config]
-  (let [job-props-file (gen-window-job-props op-config)]
-    (run-samza-job job-props-file)))
+  (submitjob gen-window-job-props op-config))
 
+(defn submit-wikipedia-op-job
+  [op-config]
+  (submitjob fhelpers/gene-wikipedia-feed-job-props op-config))
 

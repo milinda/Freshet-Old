@@ -17,7 +17,8 @@
 
 package org.pathirage.freshet.operators.select;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class Expression {
     private ExpressionType type;

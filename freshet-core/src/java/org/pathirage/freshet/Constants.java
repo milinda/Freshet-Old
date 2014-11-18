@@ -39,6 +39,10 @@ public class Constants {
     public static final String CONF_WINDOW_RANGE_SLOT_SIZE = "org.pathirage.kappaql.window.range.slot.size";
     public static final String CONF_WINDOW_ROWS = "org.pathirage.kappaql.window.rows";
 
+    public static final String CONF_SYSTEMS_WIKIPEDIA_FACTORY = "systems.wikipedia.samza.factory";
+    public static final String CONF_SYSTEMS_WIKIPEDIA_HOST = "systems.wikipedia.host";
+    public static final String CONF_SYSTEMS_WIKIPEDIA_PORT = "systems.wikipedia.port";
+
     public static final String CONF_GROUPBY_FIELDS = "org.pathirage.kappaql.groupby.fields";
 
     public static final String CONF_AGGREGATE_AGGREGATES = "org.pathirage.kappaql.aggregate.aggregrates.";

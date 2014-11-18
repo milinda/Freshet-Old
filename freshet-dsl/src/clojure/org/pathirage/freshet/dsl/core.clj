@@ -28,7 +28,7 @@
   [stream s]
   (assoc stream :ts (keyword s)))
 
-(defn ns
+(defn namespace
   [stream ns]
   (assoc stream :ns ns))
 
@@ -80,21 +80,21 @@
         (update-fields fields))))
 
 ;; TODO: use named parameters for configuring sliding windows.
-(defn range
+(defn window-range
   [window seconds]
   (let [window (assoc window :window-type :range)]
     (assoc window :range seconds)))
 
-(defn rows
+(defn window-rows
   [window count]
   (let [window (assoc window :window-type :rows)]
     (assoc window :rows count)))
 
-(defn now
+(defn window-now
   [window]
   (assoc window :window-type :now))
 
-(defn unbounded
+(defn window-unbounded
   [window]
   (assoc window :window-type :unbounded))
 

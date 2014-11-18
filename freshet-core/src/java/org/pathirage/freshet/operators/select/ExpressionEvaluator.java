@@ -17,7 +17,6 @@
 
 package org.pathirage.freshet.operators.select;
 
-import org.apache.commons.math3.analysis.function.Exp;
 import org.pathirage.freshet.data.StreamDefinition;
 import org.pathirage.freshet.data.StreamElement;
 

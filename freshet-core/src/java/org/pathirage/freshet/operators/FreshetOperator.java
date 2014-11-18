@@ -86,7 +86,7 @@ public abstract class FreshetOperator {
         for(String inputStream : inputStreams.keySet()){
             // TODO: How to handle undefined
             Map<String, String> fields = Utilities.parseMap(inputStreams.get(inputStream));
-            Map<String, StreamDefinition.FieldType> fieldTypes = new HashMap<>();
+            Map<String, StreamDefinition.FieldType> fieldTypes = new HashMap<String, StreamDefinition.FieldType>();
             for(Map.Entry<String, String> e : fields.entrySet()){
                 fieldTypes.put(e.getKey(), StreamDefinition.FieldType.valueOf(e.getValue()));
             }
@@ -97,7 +97,7 @@ public abstract class FreshetOperator {
         Config outputStreams = config.subset(Constants.CONF_OPERATOR_OUTPUT_STREAMS);
         for(String outputStream : outputStreams.keySet()){
             Map<String, String> fields = Utilities.parseMap(inputStreams.get(outputStream));
-            Map<String, StreamDefinition.FieldType> fieldTypes = new HashMap<>();
+            Map<String, StreamDefinition.FieldType> fieldTypes = new HashMap<String, StreamDefinition.FieldType>();
             for(Map.Entry<String, String> e : fields.entrySet()){
                 fieldTypes.put(e.getKey(), StreamDefinition.FieldType.valueOf(e.getValue()));
             }

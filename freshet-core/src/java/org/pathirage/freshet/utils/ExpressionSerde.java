@@ -17,7 +17,7 @@
 
 package org.pathirage.freshet.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.pathirage.freshet.operators.select.Expression;
 import org.pathirage.freshet.operators.select.ExpressionType;
 import org.pathirage.freshet.operators.select.PredicateType;
