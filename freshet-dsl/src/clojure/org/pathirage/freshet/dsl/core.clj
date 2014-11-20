@@ -1,7 +1,8 @@
 (ns org.pathirage.freshet.dsl.core
   (:refer-clojure :exclude [range])
   (:require [clojure.walk :as walk]
-            [clojure.set :as set]))
+            [clojure.set :as set])
+  (:gen-class))
 
 (comment "Most of the DSL constructs are inspired by SQLKorma(http://sqlkorma.com) library by Chris Ganger.")
 

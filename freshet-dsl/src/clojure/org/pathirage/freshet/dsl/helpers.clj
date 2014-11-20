@@ -4,9 +4,20 @@
            [org.apache.samza.config.factories PropertiesConfigFactory]
            [org.apache.samza.job JobRunner]
            [java.net URI]
-           [java.io File])
+           [java.io File FileInputStream]
+           [java.util Properties])
   (:require [clojurewerkz.propertied.properties :as props]
-            [org.pathirage.freshet.dsl.core :refer [defstream ts stream-fields]]))
+            [org.pathirage.freshet.dsl.core :refer [defstream ts stream-fields]])
+  (:gen-class))
+
+(defn yarn-package-path
+  []
+  (let [freshet-home (System/getenv "FRESHET_HOME")
+        freshet-conf (str freshet-home "/deploy/freshet/conf/freshet.conf")
+        freshet-conf-in (FileInputStream. freshet-conf)
+        props (Properties.)]
+    (.load props freshet-conf-in)
+    (.get props "yarn.package.path")))
 
 (defn default-without-mterics-props
   "Create map of default properties for Freshet Samza jobs.
@@ -37,12 +48,12 @@
     (ts :timestamp)))
 
 ; TODO: Clojure maps describing wikipedia activity feed and window operator jobs. Use samza default conf.
-(defn wikipedia-activity-feed-job [zookeeper kafka-brokers yarn-package]
+(defn wikipedia-activity-feed-job [zookeeper kafka-brokers]
   {:job-name "wikipedia-feed"
    :inputs "wikipedia.#en.wikipedia,wikipedia.#en.wiktionary,wikipedia.#en.wikinews"
    :zookeeper zookeeper
    :broker kafka-brokers
-   :yarn-package yarn-package
+   :yarn-package (yarn-package-path)
    :task-class "org.pathirage.freshet.utils.WikipediaFeedStreamTask"})
 
 (defn- file-path-to-uri

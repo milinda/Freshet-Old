@@ -27,6 +27,13 @@ under the License.
   <name>Freshet distribution to use when submitting jobs</name>
   <packaging>jar</packaging>
 
+  <repositories>
+    <repository>
+      <id>clojars.org</id>
+      <url>http://clojars.org/repo</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.samza</groupId>
@@ -87,9 +94,9 @@ under the License.
 
     <!-- Freshet Dependencies -->
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.3.3</version>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-jaxrs</artifactId>
+      <version>1.8.5</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -102,16 +109,111 @@ under the License.
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
       <version>1.7.7</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.pathirage.freshet</groupId>
       <artifactId>freshet-core</artifactId>
       <version>${freshet.version}</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.pathirage.freshet</groupId>
       <artifactId>freshet-dsl</artifactId>
       <version>${freshet.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>clojurewerkz</groupId>
+      <artifactId>propertied</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+
+    <!-- reply dependencies -->
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>clojure</artifactId>
+      <version>1.6.0</version>
+    </dependency>
+    <dependency>
+      <groupId>reply</groupId>
+      <artifactId>reply</artifactId>
+      <version>0.3.5</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.clojure</groupId>
+          <artifactId>clojure</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>jline</groupId>
+      <artifactId>jline</artifactId>
+      <version>2.12</version>
+    </dependency>
+    <dependency>
+      <groupId>org.thnetos</groupId>
+      <artifactId>cd-client</artifactId>
+      <version>0.3.6</version>
+    </dependency>
+    <dependency>
+      <groupId>clj-stacktrace</groupId>
+      <artifactId>clj-stacktrace</artifactId>
+      <version>0.2.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>tools.nrepl</artifactId>
+      <version>0.2.6</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.clojure</groupId>
+          <artifactId>clojure</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>tools.cli</artifactId>
+      <version>0.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cemerick</groupId>
+      <artifactId>drawbridge</artifactId>
+      <version>0.0.6</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.clojure</groupId>
+          <artifactId>tools.nrepl</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>trptcolin</groupId>
+      <artifactId>versioneer</artifactId>
+      <version>0.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>clojure-complete</groupId>
+      <artifactId>clojure-complete</artifactId>
+      <version>0.2.3</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.clojure</groupId>
+          <artifactId>clojure</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>net.cgrand</groupId>
+      <artifactId>sjacket</artifactId>
+      <version>0.1.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.clojure</groupId>
+          <artifactId>clojure</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 

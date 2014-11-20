@@ -1,5 +1,6 @@
 (ns org.pathirage.freshet.dsl.compiler
-  (:import (org.pathirage.freshet.operators.select Expression ExpressionType PredicateType)))
+  (:import (org.pathirage.freshet.operators.select Expression ExpressionType PredicateType))
+  (:gen-class))
 
 (def freshet-type-map
   {:integer "int"

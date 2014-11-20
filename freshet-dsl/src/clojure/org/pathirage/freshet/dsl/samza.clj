@@ -4,7 +4,8 @@
            [org.apache.samza.job JobRunner]
            [java.net URI])
   (:require [clojurewerkz.propertied.properties :as props]
-            [org.pathirage.freshet.dsl.helpers :as fhelpers]))
+            [org.pathirage.freshet.dsl.helpers :as fhelpers])
+  (:gen-class))
 
 (comment
   "Sample Samza Property File
@@ -48,14 +49,19 @@
 (defn run-samza-job*
   [props-file]
   (let [config-factory (PropertiesConfigFactory.)
-        config (.getConfig config-factory props-file)
+        config (.getConfig config-factory (URI. props-file))
         job-runner (JobRunner. config)]
     (.run job-runner)))
 
+
+
 (defn run-samza-job
   [props-file]
-  (let [hello-samza-dir "/Users/mpathira/Workspace/Personal/Code/samza/hello-samza"]
-    (clojure.java.shell/sh "deploy/samza/bin/run-job.sh" (str "--config-factory=org.apache.samza.config.factories.PropertiesConfigFactory " "--config-path=" props-file) :dir hello-samza-dir)))
+  (let [freshet-home (str (System/getenv "FRESHET_HOME") "/deploy/freshet")
+        job-submission-result (clojure.java.shell/sh "bin/run-job.sh" (str "--config-factory=org.apache.samza.config.factories.PropertiesConfigFactory " "--config-path=" props-file) :dir freshet-home)]
+    (if (not (= (:exit job-submission-result) 0))
+      (let [err (:err job-submission-result)]
+        (println (str "Error submitting Samza job to YARN: " err))))))
 
 (defn default-with-mterics-props
   "Create map of default properties for Freshet Samza jobs.
