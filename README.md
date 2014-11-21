@@ -1,2 +1,2 @@
-# Freshet - CQL Based Clojure DSL on Apache Samza for Hybrid (Streaming + Batch) Analytics
+# Freshet - CQL Based Clojure DSL for Apache Samza
 
