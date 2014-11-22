@@ -24,56 +24,66 @@ import org.apache.samza.metrics.MetricsRegistry;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.SystemStreamPartition;
 import org.apache.samza.util.BlockingEnvelopeMap;
+import org.pathirage.freshet.data.StreamElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class WikipediaConsumer extends BlockingEnvelopeMap implements WikipediaFeed.WikipediaFeedListener {
-  private static final Logger log = LoggerFactory.getLogger(WikipediaConsumer.class);
-  private final List<String> channels;
-  private final String systemName;
-  private final WikipediaFeed feed;
+    private static final Logger log = LoggerFactory.getLogger(WikipediaConsumer.class);
+    private final List<String> channels;
+    private final String systemName;
+    private final WikipediaFeed feed;
 
-  public WikipediaConsumer(String systemName, WikipediaFeed feed, MetricsRegistry registry) {
-    this.channels = new ArrayList<String>();
-    this.systemName = systemName;
-    this.feed = feed;
-  }
-
-  public void onEvent(final WikipediaFeed.WikipediaFeedEvent event) {
-    SystemStreamPartition systemStreamPartition = new SystemStreamPartition(systemName, event.getChannel(), new Partition(0));
-
-    try {
-      put(systemStreamPartition, new IncomingMessageEnvelope(systemStreamPartition, null, null, event));
-    } catch (Exception e) {
-      log.error("Error sending messages downstream.", e);
-    }
-  }
-
-  @Override
-  public void register(SystemStreamPartition systemStreamPartition, String startingOffset) {
-    super.register(systemStreamPartition, startingOffset);
-
-    channels.add(systemStreamPartition.getStream());
-  }
-
-  @Override
-  public void start() {
-    feed.start();
-
-    for (String channel : channels) {
-      feed.listen(channel, this);
-    }
-  }
-
-  @Override
-  public void stop() {
-    for (String channel : channels) {
-      feed.unlisten(channel, this);
+    public WikipediaConsumer(String systemName, WikipediaFeed feed, MetricsRegistry registry) {
+        this.channels = new ArrayList<String>();
+        this.systemName = systemName;
+        this.feed = feed;
     }
 
-    feed.stop();
-  }
+    public void onEvent(final WikipediaFeed.WikipediaFeedEvent event) {
+        SystemStreamPartition systemStreamPartition = new SystemStreamPartition(systemName, event.getChannel(), new Partition(0));
+
+        Map<String, Object> fields = new HashMap<String, Object>();
+        fields.put("rawEvent", event.getRawEvent());
+        fields.put("channel", event.getChannel());
+        fields.put("source", event.getChannel());
+        fields.put("time", event.getTime());
+
+        Date now = new Date();
+
+        StreamElement se = new StreamElement(fields, now.getTime(), now.getTime(), null);
+
+        try {
+            put(systemStreamPartition, new IncomingMessageEnvelope(systemStreamPartition, null, null, se));
+        } catch (Exception e) {
+            log.error("Error sending messages downstream.", e);
+        }
+    }
+
+    @Override
+    public void register(SystemStreamPartition systemStreamPartition, String startingOffset) {
+        super.register(systemStreamPartition, startingOffset);
+
+        channels.add(systemStreamPartition.getStream());
+    }
+
+    @Override
+    public void start() {
+        feed.start();
+
+        for (String channel : channels) {
+            feed.listen(channel, this);
+        }
+    }
+
+    @Override
+    public void stop() {
+        for (String channel : channels) {
+            feed.unlisten(channel, this);
+        }
+
+        feed.stop();
+    }
 }
