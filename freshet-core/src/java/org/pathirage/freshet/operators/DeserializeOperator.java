@@ -33,7 +33,6 @@ import org.pathirage.freshet.data.StreamElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Deprecated
 public class DeserializeOperator extends FreshetOperator implements StreamTask, InitableTask{
     private static final Logger log = LoggerFactory.getLogger(DeserializeOperator.class);
 

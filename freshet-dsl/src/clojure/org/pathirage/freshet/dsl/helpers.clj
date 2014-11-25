@@ -29,7 +29,7 @@
    "yarn.package.path" yarn-package-path
    "systems.kafka.samza.factory" "org.apache.samza.system.kafka.KafkaSystemFactory"
    "serializers.registry.streamelement.class" "org.pathirage.freshet.serde.StreamElementSerdeFactory"
-   "systems.kafka.samza.msg.serde" "json"
+   "systems.kafka.samza.msg.serde" "streamelement"
    "systems.kafka.consumer.zookeeper.connect" zookeeper-list
    "systems.kafka.consumer.auto.offset.reset" "largest"
    "systems.kafka.producer.metadata.broker.list" broker-list
@@ -77,5 +77,3 @@
         properties-file (java.io.File/createTempFile properties-file-name ".properties")]
     (props/store-to wikiprops properties-file)
     (.toString (.toURI properties-file))))
-
-(defn example-window-op-job [])

@@ -157,6 +157,8 @@ public class WindowOperator extends FreshetOperator implements StreamTask, Inita
         }
 
         public void handle(StreamElement streamElement, MessageCollector messageCollector) {
+            log.info("Incoming stream element id: " + streamElement.getId());
+            log.info("Incoming stream element titles: " + streamElement.getStringField("title"));
             StreamElement evicted = evictingQueue.add(streamElement.getId(), streamElement);
             if (evicted != null) {
                 /* Sending element deleted from window to down stream for processing.

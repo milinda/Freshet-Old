@@ -19,6 +19,7 @@ package org.pathirage.freshet.data;
 
 import com.google.common.collect.ImmutableMap;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /* Represent a element of streams in KappaQL. This is a immutable data structure. */
@@ -38,13 +39,13 @@ public class StreamElement {
     private boolean delete;
 
     /* Actual contents of stream element. */
-    private final ImmutableMap<String, Object> fields;
+    private final Map<String, Object> fields;
 
     public StreamElement(Map<String, Object> fields, long globalClock, long timestamp, String id){
         this.globalClock = globalClock;
         this.timestamp = timestamp;
         this.id = id;
-        this.fields = ImmutableMap.copyOf(fields);
+        this.fields = fields;
     }
 
     public Object getField(String fieldName) {
@@ -94,6 +95,8 @@ public class StreamElement {
         this.delete = delete;
     }
 
+
+
     public long getGlobalClock() {
         return globalClock;
     }
@@ -104,5 +107,15 @@ public class StreamElement {
 
     public String getId() {
         return id;
+    }
+
+    public Map<String, Object> getFields(){
+        Map<String, Object> r = new HashMap<String, Object>();
+
+        for(Map.Entry<String, Object> e : fields.entrySet()){
+            r.put(e.getKey(), e.getValue());
+        }
+
+        return r;
     }
 }

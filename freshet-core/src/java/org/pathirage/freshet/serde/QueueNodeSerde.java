@@ -23,6 +23,8 @@ import com.esotericsoftware.kryo.io.Output;
 import org.apache.samza.serializers.Serde;
 import org.pathirage.freshet.utils.QueueNode;
 
+import java.io.ByteArrayOutputStream;
+
 public class QueueNodeSerde implements Serde<QueueNode> {
     private Kryo kryo;
 
@@ -38,7 +40,7 @@ public class QueueNodeSerde implements Serde<QueueNode> {
 
     @Override
     public byte[] toBytes(QueueNode queueNode) {
-        Output output = new Output();
+        Output output = new Output(new ByteArrayOutputStream(2048));
         kryo.writeObject(output, queueNode);
 
         return output.toBytes();

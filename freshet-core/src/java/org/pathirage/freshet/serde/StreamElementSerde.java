@@ -23,6 +23,8 @@ import com.esotericsoftware.kryo.io.Output;
 import org.apache.samza.serializers.Serde;
 import org.pathirage.freshet.data.StreamElement;
 
+import java.io.ByteArrayOutputStream;
+
 public class StreamElementSerde implements Serde<StreamElement> {
 
     private Kryo kryo;
@@ -39,7 +41,7 @@ public class StreamElementSerde implements Serde<StreamElement> {
 
     @Override
     public byte[] toBytes(StreamElement streamElement) {
-        Output output = new Output();
+        Output output = new Output(new ByteArrayOutputStream(1024));
         kryo.writeObject(output, streamElement);
 
         return output.toBytes();

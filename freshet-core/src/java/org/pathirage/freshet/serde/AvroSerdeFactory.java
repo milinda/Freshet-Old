@@ -27,7 +27,6 @@ import org.pathirage.freshet.FreshetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Deprecated
 public class AvroSerdeFactory implements SerdeFactory<GenericRecord> {
     private static final Logger log = LoggerFactory.getLogger(AvroSerdeFactory.class);
 
