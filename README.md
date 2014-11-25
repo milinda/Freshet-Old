@@ -29,5 +29,9 @@ Freshet is the first step towards a complete implementation of Kappa Architectur
   (where (> :diff-bytes 200)))
 ```
 
+## License
+
+Freshet is licensed under the Apache License, version 2.0
+
 [1] Arvind Arasu, Shivnath Babu, and Jennifer Widom. 2006. The CQL continuous query language: semantic foundations and query execution. The VLDB Journal 15, 2 (June 2006), 121-142. DOI=10.1007/s00778-004-0147-z http://dx.doi.org/10.1007/s00778-004-0147-z
 
