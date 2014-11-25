@@ -77,5 +77,3 @@
         properties-file (java.io.File/createTempFile properties-file-name ".properties")]
     (props/store-to wikiprops properties-file)
     (.toString (.toURI properties-file))))
-
-(defn example-window-op-job [])

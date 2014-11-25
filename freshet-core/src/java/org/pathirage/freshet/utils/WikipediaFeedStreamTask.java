@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,7 +50,7 @@ public class WikipediaFeedStreamTask implements StreamTask {
             parsedEvent.put("channel", wikipediaFeedEvent.getStringField("channel"));
             parsedEvent.put("source", wikipediaFeedEvent.getStringField("source"));
 
-            StreamElement se = new StreamElement(parsedEvent, wikipediaFeedEvent.getLongField("time"), wikipediaFeedEvent.getLongField("time"), (String) parsedEvent.get("diff-url"));
+            StreamElement se = new StreamElement(parsedEvent, wikipediaFeedEvent.getLongField("time"), wikipediaFeedEvent.getLongField("time"), UUID.randomUUID().toString());
 
             messageCollector.send(new OutgoingMessageEnvelope(OUTPUT_STREAM, se));
         }catch (Exception e){

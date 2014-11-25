@@ -73,21 +73,33 @@ public class KVStorageBackedEvictingQueue {
 
         QueueNode newElement = new QueueNode();
         newElement.setValue(value);
-        newElement.setNext(headKey);
+
+        if(headKey != null) {
+            newElement.setNext(headKey);
+        } else {
+            newElement.setNext(CONST_UNDEFINED);
+        }
+
         newElement.setPrev(CONST_UNDEFINED);
 
-        // Update the old head prev ot point new head
-        head = store.get(headKey);
-        head.setPrev(key);
+        if(headKey != null) {
+            // Update the old head prev ot point new head
+            head = store.get(headKey);
+            head.setPrev(key);
 
-        // Put the old head with updated info
-        store.put(headKey, head);
+            // Put the old head with updated info
+            store.put(headKey, head);
+        }
 
         // Put the new head.
         store.put(key, newElement);
 
         // Update metadata
         metadataStore.put(CONST_HEAD, key);
+        if(tailKey == null){
+            // In a empty queue, newly added head becomes the tail.
+            metadataStore.put(CONST_TAIL, key);
+        }
 
         if(size.get() < maxSize){
             newSize = size.incrementAndGet();

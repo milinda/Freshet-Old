@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-@Deprecated
 public class AvroSerde implements Serde<GenericRecord> {
     private static final Logger log = LoggerFactory.getLogger(AvroSerde.class);
 
