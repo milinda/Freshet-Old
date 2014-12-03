@@ -1,5 +1,7 @@
 (ns org.pathirage.freshet.dsl.samza
   (:import [org.pathirage.freshet Constants]
+           [org.pathirage.freshet.utils ExpressionSerde]
+           [org.pathirage.freshet.operators.select Expression]
            [org.apache.samza.config.factories PropertiesConfigFactory]
            [org.apache.samza.job JobRunner]
            [java.net URI])
@@ -61,11 +63,11 @@
     props))
 
 (defn window-operator-default-config
-  [query-id job-name input-stram output-stream zk kafka-bk]
+  [query-id job-name input-stream output-stream zk kafka-bk]
   {:yarn-package (helpers/yarn-package-path)
    :zookeeper zk
    :broker kafka-bk
-   :input-stream input-stram
+   :input-stream input-stream
    :job-name job-name
    :query-id query-id
    :output-stream output-stream})
@@ -80,11 +82,23 @@
   (let [default-config (window-operator-default-config query-id job-name input-stream output-stream zk kafka-bk)]
     (assoc default-config :window-rows rows)))
 
-(defn get-window-properties-file [job-name]
-  (str "samza-job-" job-name))
+(defn select-operator-config
+  [query-id job-name input-stream output-stream intput-stream-defs zk kafka-bk where]
+  {:yarn-package (helpers/yarn-package-path)
+   :zookeeper zk
+   :broker kafka-bk
+   :input-stream input-stream
+   :input-stream-defs intput-stream-defs
+   :job-name job-name
+   :query-id query-id
+   :output-stream output-stream
+   :where-clause (ExpressionSerde/serialize where)})
+
+(defn properties-file-name [operator job-name]
+  (str "samza-" operator "-operator-job-" job-name))
 
 (defn gen-window-job-props
-  "Generate properties file for Freshet Window operator.
+  "Generate properties file for Freshet Window operator based on operator config.
 
   Required config options
     - Query Id
@@ -113,9 +127,38 @@
                    (assoc Constants/CONF_SAMZA_TASK_CHECKPOINT_FACTORY "org.apache.samza.checkpoint.kafka.KafkaCheckpointManagerFactory")
                    (config-range op-config)
                    (config-rows op-config))
-        properties-file-name (get-window-properties-file (:job-name op-config))
+        properties-file-name (properties-file-name "window" (:job-name op-config))
         properties-file (java.io.File/createTempFile properties-file-name ".properties")]
     (props/store-to wprops properties-file)
+    (.getAbsolutePath properties-file)))
+
+(defn gen-select-job-props
+  "Generate properties file for select job based on operator config"
+  [op-config]
+  (let [select-props (default-with-mterics-props (:zookeeper op-config) (:broker op-config) (:yarn-package op-config))
+        select-props (-> (assoc select-props Constants/CONF_SAMZA_JOB_NAME (:job-name op-config))
+                         (assoc Constants/CONF_QUERY_ID (:query-id op-config))
+                         (assoc Constants/CONF_INPUT_STREAM (:input-stream op-config))
+                         (assoc Constants/CONF_DOWN_STREAM_TOPIC (:output-stream op-config))
+                         (assoc Constants/CONF_SAMZA_TASK_INPUTS (str "kafka." (:input-stream op-config)))
+                         (assoc Constants/CONF_SAMZA_TASK_CLASS "org.pathirage.freshet.operators.SelectOperator")
+                         (assoc Constants/CONF_SELECT_WHERE_EXPRESSION (helpers/base64-encode (:where-clause op-config)))
+                         (assoc Constants/CONF_SAMZA_TASK_CHECKPOINT_SYSTEM "kafka")
+                         (assoc Constants/CONF_SAMZA_TASK_CHECKPOINT_REPLICATION_FACTOR "1")
+                         (assoc Constants/CONF_SAMZA_TASK_CHECKPOINT_FACTORY "org.apache.samza.checkpoint.kafka.KafkaCheckpointManagerFactory")
+                         (into (helpers/streams-to-streamdef-props (:input-stream-defs op-config))))
+        properties-file-name (properties-file-name "select" (:job-name op-config))
+        properties-file (java.io.File/createTempFile properties-file-name ".properties")]
+    (prn select-props)
+    (props/store-to select-props properties-file)
+    (.getAbsolutePath properties-file)))
+
+(defn gen-aggregate-job-props
+  [op-config]
+  (let [aggr-props (default-with-mterics-props (:zookeeper op-config) (:broker op-config) (:yarn-package op-config))
+        properties-file-name (properties-file-name "aggregate" (:job-name op-config))
+        properties-file (java.io.File/createTempFile properties-file-name ".properties")]
+    (props/store-to aggr-props properties-file)
     (.getAbsolutePath properties-file)))
 
 (defmacro submitjob
@@ -127,6 +170,10 @@
 (defn submit-window-op-job
   [op-config]
   (submitjob gen-window-job-props op-config))
+
+(defn submit-select-op-job
+  [op-config]
+  (submitjob gen-select-job-props op-config))
 
 (defn submit-wikipedia-op-job
   [op-config]

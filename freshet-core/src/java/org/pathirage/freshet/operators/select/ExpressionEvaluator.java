@@ -137,7 +137,7 @@ public class ExpressionEvaluator {
                 return se.getIntegerField(fieldName).doubleValue();
             } else if (fieldType == StreamDefinition.FieldType.LONG) {
                 return se.getLongField(fieldName).doubleValue();
-            } else if (fieldType == StreamDefinition.FieldType.BOOL) {
+            } else if (fieldType == StreamDefinition.FieldType.BOOLEAN) {
                 return se.getBoolField(fieldName);
             } else if (fieldType == StreamDefinition.FieldType.FLOAT) {
                 return se.getFloatField(fieldName).doubleValue();

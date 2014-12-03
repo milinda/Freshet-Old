@@ -52,10 +52,10 @@ public abstract class FreshetOperator {
     protected String system;
 
     /* Definitions of input streams for this operator */
-    protected Map<String, StreamDefinition> inputStreams;
+    protected Map<String, StreamDefinition> inputStreams = new HashMap<String, StreamDefinition>();
 
     /* Definitions of output streams of this operator */
-    protected Map<String, StreamDefinition> outputStreams;
+    protected Map<String, StreamDefinition> outputStreams = new HashMap<String, StreamDefinition>();
 
     protected void initOperator(FreshetOperatorType type){
         if(config == null){
@@ -82,21 +82,21 @@ public abstract class FreshetOperator {
 
         this.system = config.get(Constants.CONF_SYSTEM, Constants.CONST_STR_DEFAULT_SYSTEM);
 
-        Config inputStreams = config.subset(Constants.CONF_OPERATOR_INPUT_STREAMS);
-        for(String inputStream : inputStreams.keySet()){
+        Config inputStreamsConfig = config.subset(Constants.CONF_OPERATOR_INPUT_STREAMS);
+        for(String inputStream : inputStreamsConfig.keySet()){
             // TODO: How to handle undefined
-            Map<String, String> fields = Utilities.parseMap(inputStreams.get(inputStream));
+            Map<String, String> fields = Utilities.parseMap(inputStreamsConfig.get(inputStream));
             Map<String, StreamDefinition.FieldType> fieldTypes = new HashMap<String, StreamDefinition.FieldType>();
             for(Map.Entry<String, String> e : fields.entrySet()){
-                fieldTypes.put(e.getKey(), StreamDefinition.FieldType.valueOf(e.getValue()));
+                fieldTypes.put(e.getKey(), StreamDefinition.FieldType.valueOf(e.getValue().toUpperCase()));
             }
 
             this.inputStreams.put(inputStream, new StreamDefinition(fieldTypes));
         }
 
-        Config outputStreams = config.subset(Constants.CONF_OPERATOR_OUTPUT_STREAMS);
-        for(String outputStream : outputStreams.keySet()){
-            Map<String, String> fields = Utilities.parseMap(inputStreams.get(outputStream));
+        Config outputStreamsConfig = config.subset(Constants.CONF_OPERATOR_OUTPUT_STREAMS);
+        for(String outputStream : outputStreamsConfig.keySet()){
+            Map<String, String> fields = Utilities.parseMap(outputStreamsConfig.get(outputStream));
             Map<String, StreamDefinition.FieldType> fieldTypes = new HashMap<String, StreamDefinition.FieldType>();
             for(Map.Entry<String, String> e : fields.entrySet()){
                 fieldTypes.put(e.getKey(), StreamDefinition.FieldType.valueOf(e.getValue()));

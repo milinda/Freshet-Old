@@ -8,7 +8,8 @@
                  [clojurewerkz/propertied "1.2.0"]
                  [org.apache.hadoop/hadoop-yarn-client "2.2.0"]
                  [org.apache.hadoop/hadoop-yarn-common "2.2.0"]
-                 [org.apache.hadoop/hadoop-common "2.2.0"]]
+                 [org.apache.hadoop/hadoop-common "2.2.0"]
+                 [commons-codec/commons-codec "1.4"]]
   :source-paths      ["src/clojure"]
   :java-source-paths ["src/java"]
   :test-paths ["test/clojure" "test/java"])

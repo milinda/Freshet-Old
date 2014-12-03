@@ -17,6 +17,7 @@
 
 package org.pathirage.freshet.operators;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -50,7 +51,7 @@ public class SelectOperator extends FreshetOperator implements StreamTask, Inita
         // Read where clause from config and build the expression.
         String expression = config.get(Constants.CONF_SELECT_WHERE_EXPRESSION, Constants.CONST_STR_UNDEFINED);
         if(!expression.equals(Constants.CONST_STR_UNDEFINED)){
-            Expression expr = ExpressionSerde.deserialize(expression);
+            Expression expr = ExpressionSerde.deserialize(new String(Base64.decodeBase64(expression.getBytes())));
             if(!expr.isPredicate()){
                 String errMessage = "Unsupported expression type: " + expr.getType() + " expression: " + expression;
                 log.error(errMessage);
@@ -78,5 +79,6 @@ public class SelectOperator extends FreshetOperator implements StreamTask, Inita
         }
 
         // TODO: How down stream of select is handled. If it handled as insert/delete stream we need to modify select logic.
+        // 12/02/2014: If select is done before window operator we don't need to handle insert/delete.
     }
 }

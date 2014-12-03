@@ -1,14 +1,71 @@
 (ns org.pathirage.freshet.dsl.helpers
   (:refer-clojure :exclude [range])
   (:import [org.pathirage.freshet Constants]
+           [org.pathirage.freshet.operators.select Expression ExpressionType PredicateType OperatorType]
            [org.apache.samza.config.factories PropertiesConfigFactory]
            [org.apache.samza.job JobRunner]
            [java.net URI]
            [java.io File FileInputStream]
-           [java.util Properties])
+           [java.util Properties]
+           [org.apache.commons.codec.binary Base64])
   (:require [clojurewerkz.propertied.properties :as props]
-            [org.pathirage.freshet.dsl.core :refer [defstream ts stream-fields]])
+            [org.pathirage.freshet.dsl.core :refer [defstream ts stream-fields]]
+            [clojure.string :as string])
   (:gen-class))
+
+(def where-diff-bytes->-100
+  (let [lhs (doto (Expression. ExpressionType/FIELD)
+              (.setField "diff-bytes"))
+        rhs (doto (Expression. ExpressionType/VALUE)
+              (.setValue 100))]
+    (doto (Expression. ExpressionType/PREDICATE)
+      (.setPredicate PredicateType/GREATER_THAN)
+      (.setLhs lhs)
+      (.setRhs rhs))))
+
+(def where-diff-bytes-<-100
+  (let [lhs (doto (Expression. ExpressionType/FIELD)
+              (.setField "diff-bytes"))
+        rhs (doto (Expression. ExpressionType/VALUE)
+              (.setValue 100))]
+    (doto (Expression. ExpressionType/PREDICATE)
+      (.setPredicate PredicateType/LESS_THAN)
+      (.setLhs lhs)
+      (.setRhs rhs))))
+
+(def where-is-new-edit
+  (let [lhs (doto (Expression. ExpressionType/FIELD)
+              (.setField "is-new"))
+        rhs (doto (Expression. ExpressionType/VALUE)
+              (.setValue true))]
+    (doto (Expression. ExpressionType/PREDICATE)
+      (.setPredicate PredicateType/EQUAL)
+      (.setLhs lhs)
+      (.setRhs rhs))))
+
+(def new-edit-and->100-diff
+  (doto (Expression. ExpressionType/PREDICATE)
+    (.setPredicate PredicateType/AND)
+    (.setLhs where-diff-bytes->-100)
+    (.setRhs where-is-new-edit)))
+
+(defn serialize-streamdef
+  [stream]
+  (let [fields (:fields stream)]
+    (string/join "," (map (fn [kv] (str (name (key kv)) "=" (name (val kv)))) fields))))
+
+(defn stream-to-streamdef-prop
+  [stream]
+  {(str Constants/CONF_OPERATOR_INPUT_STREAMS (:name stream)) (serialize-streamdef stream)})
+
+(defn streams-to-streamdef-props
+  [streams]
+  (reduce merge (map stream-to-streamdef-prop streams)))
+
+(defn base64-encode
+  [^String str]
+  (let [original-bytes (.getBytes str)]
+    (String. (Base64/encodeBase64 original-bytes))))
 
 (defn yarn-package-path
   []
@@ -46,6 +103,23 @@
                     :is-bot-edit :boolean
                     :timestamp :long])
     (ts :timestamp)))
+
+(defn wikipedia-raw-def []
+  (defstream wikipedia-raw
+             (stream-fields [:title :string
+                             :user :string
+                             :diff-bytes :integer
+                             :diff-url :string
+                             :unparsed-flags :string
+                             :summary :string
+                             :is-minor :boolean
+                             :is-unpatrolled :boolean
+                             :is-special :boolean
+                             :is-talk :boolean
+                             :is-new :boolean
+                             :is-bot-edit :boolean
+                             :timestamp :long])
+             (ts :timestamp)))
 
 ; TODO: Clojure maps describing wikipedia activity feed and window operator jobs. Use samza default conf.
 (defn wikipedia-activity-feed-job [zookeeper kafka-brokers]

@@ -50,7 +50,7 @@ public class KafkaMonitor {
 
         int threadNumber = 0;
         for (final KafkaStream stream : streams) {
-            executor.submit(new MessageConsumer(stream, new StreamHandler(), threadNumber));
+            executor.submit(new MessageConsumer(stream, new StreamHandler(topic), threadNumber));
             threadNumber++;
         }
     }
@@ -68,7 +68,7 @@ public class KafkaMonitor {
 
     public static void main(String[] args) {
         KafkaMonitor kafkaMonitor = new KafkaMonitor("localhost:2181");
-        kafkaMonitor.registerTopic("wikipedia-window", 1);
+        kafkaMonitor.registerTopic("wikipedia-selectnew", 1);
     }
 
     public class MessageConsumer implements Runnable {
@@ -96,17 +96,25 @@ public class KafkaMonitor {
     }
 
     public  class StreamHandler {
+        private String topic;
+        public StreamHandler(String topic){
+            this.topic = topic;
+        }
         private Map<String, String> elements = new HashMap<>();
 
+//        public void handle(StreamElement se){
+//            if(!se.isDelete()){
+//                elements.put(se.getId(), se.getStringField("title"));
+//            } else {
+//                String s = elements.remove(se.getId());
+//                if(s != null){
+//                    System.out.println("Deleting item already seen: " + se.getId());
+//                }
+//            }
+//        }
+
         public void handle(StreamElement se){
-            if(!se.isDelete()){
-                elements.put(se.getId(), se.getStringField("title"));
-            } else {
-                String s = elements.remove(se.getId());
-                if(s != null){
-                    System.out.println("Deleting item already seen: " + se.getId());
-                }
-            }
+            System.out.println(topic + " - " + se.getIntegerField("diff-bytes") + ": "+ se.getStringField("title"));
         }
 
     }

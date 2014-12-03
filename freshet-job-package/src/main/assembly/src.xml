@@ -95,6 +95,7 @@
         <include>clojure-complete:clojure-complete</include>
         <include>net.cgrand:sjacket</include>
         <include>reply:reply</include>
+        <include>commons-codec:commons-codec</include>
       </includes>
       <useTransitiveFiltering>true</useTransitiveFiltering>
     </dependencySet>

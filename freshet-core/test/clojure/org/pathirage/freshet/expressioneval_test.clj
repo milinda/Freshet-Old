@@ -23,12 +23,12 @@
                                      "diff-bytes" StreamDefinition$FieldType/INTEGER
                                      "diff-url" StreamDefinition$FieldType/STRING
                                      "summary" StreamDefinition$FieldType/STRING
-                                     "is-minor" StreamDefinition$FieldType/BOOL
-                                     "is-talk" StreamDefinition$FieldType/BOOL
-                                     "is-bot-edit" StreamDefinition$FieldType/BOOL
-                                     "is-new" StreamDefinition$FieldType/BOOL
-                                     "is-unpatrolled" StreamDefinition$FieldType/BOOL
-                                     "is-special" StreamDefinition$FieldType/BOOL
+                                     "is-minor" StreamDefinition$FieldType/BOOLEAN
+                                     "is-talk" StreamDefinition$FieldType/BOOLEAN
+                                     "is-bot-edit" StreamDefinition$FieldType/BOOLEAN
+                                     "is-new" StreamDefinition$FieldType/BOOLEAN
+                                     "is-unpatrolled" StreamDefinition$FieldType/BOOLEAN
+                                     "is-special" StreamDefinition$FieldType/BOOLEAN
                                      "unparsed-flags" StreamDefinition$FieldType/STRING})
         stream-def (StreamDefinition. type-map)]
     stream-def))

@@ -52,7 +52,7 @@ public class StreamDefinition {
     public enum FieldType {
         INTEGER,
         STRING,
-        BOOL,
+        BOOLEAN,
         FLOAT,
         TIME,
         LONG
