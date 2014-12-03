@@ -1,3 +1,20 @@
+# Notes (12/02/2014)
+
+## Stream Processing Language Calculus
+
+Main entities:
+
+- Inputs: These are queues
+- Outputs: These are queues
+- Operators: Take queues and variables as inputs and output queues and variables
+- Variables: Used to maintain state
+
+Execution Configuration:
+
+- Function name to implementation map
+- Variable names to variable value map
+- Queue name to actual queue map
+
 # TODOS (10/15/2014)
 
 * Write a summary about CQL
