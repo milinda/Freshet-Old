@@ -13,69 +13,6 @@
             [clojure.string :as string])
   (:gen-class))
 
-(def where-diff-bytes->-100
-  (let [lhs (doto (Expression. ExpressionType/FIELD)
-              (.setField "diff-bytes"))
-        rhs (doto (Expression. ExpressionType/VALUE)
-              (.setValue 100))]
-    (doto (Expression. ExpressionType/PREDICATE)
-      (.setPredicate PredicateType/GREATER_THAN)
-      (.setLhs lhs)
-      (.setRhs rhs))))
-
-(def where-diff-bytes-<-100
-  (let [lhs (doto (Expression. ExpressionType/FIELD)
-              (.setField "diff-bytes"))
-        rhs (doto (Expression. ExpressionType/VALUE)
-              (.setValue 100))]
-    (doto (Expression. ExpressionType/PREDICATE)
-      (.setPredicate PredicateType/LESS_THAN)
-      (.setLhs lhs)
-      (.setRhs rhs))))
-
-(def where-is-new-edit
-  (let [lhs (doto (Expression. ExpressionType/FIELD)
-              (.setField "is-new"))
-        rhs (doto (Expression. ExpressionType/VALUE)
-              (.setValue true))]
-    (doto (Expression. ExpressionType/PREDICATE)
-      (.setPredicate PredicateType/EQUAL)
-      (.setLhs lhs)
-      (.setRhs rhs))))
-
-(def new-edit-and->100-diff
-  (doto (Expression. ExpressionType/PREDICATE)
-    (.setPredicate PredicateType/AND)
-    (.setLhs where-diff-bytes->-100)
-    (.setRhs where-is-new-edit)))
-
-(defn serialize-streamdef
-  [stream]
-  (let [fields (:fields stream)]
-    (string/join "," (map (fn [kv] (str (name (key kv)) "=" (name (val kv)))) fields))))
-
-(defn stream-to-streamdef-prop
-  [stream]
-  {(str Constants/CONF_OPERATOR_INPUT_STREAMS (:name stream)) (serialize-streamdef stream)})
-
-(defn streams-to-streamdef-props
-  [streams]
-  (reduce merge (map stream-to-streamdef-prop streams)))
-
-(defn base64-encode
-  [^String str]
-  (let [original-bytes (.getBytes str)]
-    (String. (Base64/encodeBase64 original-bytes))))
-
-(defn yarn-package-path
-  []
-  (let [freshet-home (System/getenv "FRESHET_HOME")
-        freshet-conf (str freshet-home "/deploy/freshet/conf/freshet.conf")
-        freshet-conf-in (FileInputStream. freshet-conf)
-        props (Properties.)]
-    (.load props freshet-conf-in)
-    (.get props "yarn.package.path")))
-
 (defn default-without-mterics-props
   "Create map of default properties for Freshet Samza jobs.
 

@@ -46,7 +46,9 @@ function install() {
 
     mkdir -p $base_dir/deploy/freshet/conf
 
-    echo "yarn.package.path=hdfs://localhost:9000/freshet/$(basename $freshet_job_package)" > $base_dir/deploy/freshet/conf/freshet.conf
+    echo "freshet.yarn.package.path=hdfs://localhost:9000/freshet/$(basename $freshet_job_package)" > $base_dir/deploy/freshet/conf/freshet.conf
+    echo "freshet.kafka.zookeeper.connect=localhost:2181/" >> $base_dir/deploy/freshet/conf/freshet.conf
+    echo "freshet.kafka.broker.list=localhost:9092" >> $base_dir/deploy/freshet/conf/freshet.conf
   else
     echo "Cannot find $freshet_job_package. Looks like freshet-job-package build failed."
   fi

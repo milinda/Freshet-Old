@@ -6,7 +6,8 @@
            [org.apache.samza.job JobRunner]
            [java.net URI])
   (:require [clojurewerkz.propertied.properties :as props]
-            [org.pathirage.freshet.dsl.helpers :as helpers])
+            [org.pathirage.freshet.dsl.helpers :as helpers]
+            [org.pathirage.freshet.utils.config :as configutils])
   (:gen-class))
 
 (defn run-samza-job*
@@ -30,7 +31,7 @@
   zookeeper-list should look like - zk1.example.com:2181,zk2.example.com:2181,..
   broker-list should look like -  kafka1.example.com:9092,kafka2.example.com:9092, .."
   [zookeeper-list broker-list yarn-package-path]
-  {"job.factory.class" "org.apache.samza.job.yarn.YarnJobFactory"
+  {Constants/CONF_SAMZA_JOB_FACTORY_CLASS "org.apache.samza.job.yarn.YarnJobFactory"
    "yarn.package.path" yarn-package-path
    "metrics.reporters" "snapshot,jmx"
    "serializers.registry.string.class" "org.apache.samza.serializers.StringSerdeFactory"
@@ -64,7 +65,7 @@
 
 (defn window-operator-default-config
   [query-id job-name input-stream output-stream zk kafka-bk]
-  {:yarn-package (helpers/yarn-package-path)
+  {:yarn-package (configutils/yarn-package-path)
    :zookeeper zk
    :broker kafka-bk
    :input-stream input-stream
@@ -84,7 +85,7 @@
 
 (defn select-operator-config
   [query-id job-name input-stream output-stream intput-stream-defs zk kafka-bk where]
-  {:yarn-package (helpers/yarn-package-path)
+  {:yarn-package (configutils/yarn-package-path)
    :zookeeper zk
    :broker kafka-bk
    :input-stream input-stream
@@ -142,11 +143,11 @@
                          (assoc Constants/CONF_DOWN_STREAM_TOPIC (:output-stream op-config))
                          (assoc Constants/CONF_SAMZA_TASK_INPUTS (str "kafka." (:input-stream op-config)))
                          (assoc Constants/CONF_SAMZA_TASK_CLASS "org.pathirage.freshet.operators.SelectOperator")
-                         (assoc Constants/CONF_SELECT_WHERE_EXPRESSION (helpers/base64-encode (:where-clause op-config)))
+                         (assoc Constants/CONF_SELECT_WHERE_EXPRESSION (configutils/base64-encode (:where-clause op-config)))
                          (assoc Constants/CONF_SAMZA_TASK_CHECKPOINT_SYSTEM "kafka")
                          (assoc Constants/CONF_SAMZA_TASK_CHECKPOINT_REPLICATION_FACTOR "1")
                          (assoc Constants/CONF_SAMZA_TASK_CHECKPOINT_FACTORY "org.apache.samza.checkpoint.kafka.KafkaCheckpointManagerFactory")
-                         (into (helpers/streams-to-streamdef-props (:input-stream-defs op-config))))
+                         (into (configutils/streams-to-streamdef-props (:input-stream-defs op-config))))
         properties-file-name (properties-file-name "select" (:job-name op-config))
         properties-file (java.io.File/createTempFile properties-file-name ".properties")]
     (prn select-props)

@@ -31,6 +31,7 @@ public class Constants {
     public static final String CONF_SAMZA_TASK_CHECKPOINT_SYSTEM = "task.checkpoint.system";
     public static final String CONF_SAMZA_TASK_CHECKPOINT_REPLICATION_FACTOR = "task.checkpoint.replication.factor";
     public static final String CONF_SAMZA_JOB_NAME = "job.name";
+    public static final String CONF_SAMZA_JOB_FACTORY_CLASS = "job.factory.class";
 
     public static final String CONF_OPERATOR_INPUT_STREAMS = "org.pathirage.kappaql.input.streams.";
     public static final String CONF_OPERATOR_OUTPUT_STREAMS = "org.pathirage.kappaql.output.streams.";
