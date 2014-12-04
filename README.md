@@ -29,6 +29,12 @@ Freshet is the first step towards a complete implementation of Kappa Architectur
   (where (> :diff-bytes 200)))
 ```
 
+## Freshet Query Execution (Based on CQL Execution Semantics)
+
+docs/freshet-query-execution.png
+
+![Freshet Query Execution Diagram](/docs/freshet-query-execution.png?raw=true "Freshet Query Execution")
+
 ## License
 
 Freshet is licensed under the Apache License, version 2.0
