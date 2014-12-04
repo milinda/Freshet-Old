@@ -26,7 +26,7 @@
   []
   (read-property-from-freshet-configuration "freshet.kafka.zookeeper.connect"))
 
-(defn kafak-broker-list
+(defn kafka-broker-list
   "Read Kafka broker list from freshet.conf"
   []
   (read-property-from-freshet-configuration "freshet.kafka.broker.list"))

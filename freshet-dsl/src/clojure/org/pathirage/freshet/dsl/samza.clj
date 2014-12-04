@@ -64,10 +64,10 @@
     props))
 
 (defn window-operator-default-config
-  [query-id job-name input-stream output-stream zk kafka-bk]
+  [query-id job-name input-stream output-stream]
   {:yarn-package (configutils/yarn-package-path)
-   :zookeeper zk
-   :broker kafka-bk
+   :zookeeper (configutils/zookeeper-node-list)
+   :broker (configutils/kafka-broker-list)
    :input-stream input-stream
    :job-name job-name
    :query-id query-id
@@ -86,8 +86,8 @@
 (defn select-operator-config
   [query-id job-name input-stream output-stream intput-stream-defs zk kafka-bk where]
   {:yarn-package (configutils/yarn-package-path)
-   :zookeeper zk
-   :broker kafka-bk
+   :zookeeper (configutils/zookeeper-node-list)
+   :broker (configutils/kafka-broker-list)
    :input-stream input-stream
    :input-stream-defs intput-stream-defs
    :job-name job-name
