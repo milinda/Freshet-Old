@@ -1,3 +1,24 @@
+# Notes (01/07/2015)
+
+I have window and select operators working. Need to get join and aggregates working. Other than that there are several
+issues related to implementation.
+
+ - Execution layer is not properly connected to DSL.
+ - Operators are designed as StreamTasks and it prevent us from implementing stream optimizations like **fusion** and **fission**.
+ - Stream element definition assumes a DB row like data. This prevent Freshet from supporting JSON/XML streams.
+ - There is no proper representation for streaming query.
+ - No way of supporting user defined functions, data types and operators.
+
+
+Yi Pan's API for Samza StreamQL has several nice concepts such as separation of operator layer from execution layer. This
+can be used as a base for implementing Freshet operator layer.
+
+If we separate out operator layer from execution layer, we can easily support different back-ends based on different requirements.
+Also this will allow us to do multiple levels of streaming optimizations. For example,
+
+ - CQL level optimizations at operator layer and how operators are assigned to StreamTasks.
+ - Then at StreamTask level we can do low level optimizations.
+
 # Notes (12/02/2014)
 
 ## Stream Processing Language Calculus
