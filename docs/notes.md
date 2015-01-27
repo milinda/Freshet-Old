@@ -1,3 +1,9 @@
+# Notes (01/27/2015)
+
+## Current Status Of Freshet
+
+- 
+
 # Notes (01/07/2015)
 
 I have window and select operators working. Need to get join and aggregates working. Other than that there are several
