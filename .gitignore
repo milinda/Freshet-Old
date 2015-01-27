@@ -5,6 +5,7 @@
 #pom.xml
 #pom.xml.asc
 *jar
+.DS_Store
 /lib/
 /classes/
 /target/
