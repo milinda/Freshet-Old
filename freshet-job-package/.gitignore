@@ -1,8 +1,0 @@
-*.iml
-target/
-
-## File-based project format:
-*.ipr
-*.iws
-
-.idea/
